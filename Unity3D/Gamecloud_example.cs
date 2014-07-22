@@ -6,7 +6,7 @@ using Gamecloud;
 
 public class Gamecloud_example : MonoBehaviour {
 
-	private static string DEV_ADDR = "http://54.217.213.109:8888";
+	private static string DEV_ADDR = "http://";
 
 	//Gamecloud.Gamecloud gameCloud = new Gamecloud.Gamecloud(DEV_ADDR, "NO_AUTH");
 	Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud(DEV_ADDR, "as");
