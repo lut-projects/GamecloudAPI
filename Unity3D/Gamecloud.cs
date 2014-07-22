@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,7 +7,7 @@ namespace Gamecloud
 
 	public class Gamecloud {
 
-
+	
 		private string SERVER_ADDRESS = "";
 		private string authkey = "";
 
@@ -22,6 +22,17 @@ namespace Gamecloud
 			this.SERVER_ADDRESS = serverAddress;
 			this.authkey = authkey;
 		}
+
+		/// <summary>
+		/// Delegate for callbacks
+		/// </summary>
+		/// <param name="error">
+		/// Error text received if something goes wrong
+		/// </param>
+		/// <param name="result">
+		/// The resulting string when things go okay
+		/// </param>
+		public delegate void Callback(string error, string result);
 
 		//The list of all dictionaries for storing different information
 		public Dictionary<string, string> GetItemsDict = new Dictionary<string, string>();
@@ -87,13 +98,14 @@ namespace Gamecloud
 		/// <param name="hash">ASK hash</param>
 		/// <param name="playerId">Player identifier</param>
 		/// <param name="characterId">Character identifier</param>
-		public void askItems(string hash, string playerId, string characterId)
+		/// <param name="callback">The callback function for results.</param>
+		public void askItems(string hash, string playerId, string characterId, Callback callback)
 		{
 
 			// Create the call
 			Hashtable data = createCall(hash, playerId, characterId);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 
 		/// <summary>
@@ -102,12 +114,13 @@ namespace Gamecloud
 		/// <param name="hash">gainItem hash</param>
 		/// <param name="playerId">Player identifier.</param>
 		/// <param name="characterId">Character identifier.</param>
-		public void gainItem(string hash, string playerId, string characterId) 
+		/// <param name="callback">The callback function for results.</param>
+		public void gainItem(string hash, string playerId, string characterId, Callback callback) 
 		{
 			// Create the call
 			Hashtable data = createCall(hash, playerId, characterId);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 
 		/// <summary>
@@ -116,12 +129,13 @@ namespace Gamecloud
 		/// <param name="hash">loseItem hash.</param>
 		/// <param name="playerId">Player identifier.</param>
 		/// <param name="characterId">Character identifier.</param>
-		public void loseItem(string hash, string playerId, string characterId)
+		/// <param name="callback">The callback function for results.</param>
+		public void loseItem(string hash, string playerId, string characterId, Callback callback)
 		{
 			// Create the call
 			Hashtable data = createCall(hash, playerId, characterId);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 
 		/// <summary>
@@ -129,12 +143,13 @@ namespace Gamecloud
 		/// </summary>
 		/// <param name="hash">triggerEvent hash.</param>
 		/// <param name="playerId">Player identifier.</param>
-		public void triggerEvent(string hash, string playerId)
+		/// <param name="callback">The callback function for results.</param>
+		public void triggerEvent(string hash, string playerId, Callback callback)
 		{
 			// Create the call, no need for characterId so it is null
 			Hashtable data = createCall(hash, playerId, null);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 
 		/// <summary>
@@ -142,12 +157,13 @@ namespace Gamecloud
 		/// </summary>
 		/// <param name="hash">askEvent hash.</param>
 		/// <param name="playerId">Player identifier.</param>
-		public void askEvent(string hash, string playerId)
+		/// <param name="callback">The callback function for results.</param>
+		public void askEvent(string hash, string playerId, Callback callback)
 		{
 			// Create the call, no need for characterId so it is null
 			Hashtable data = createCall(hash, playerId, null);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 
 		/// <summary>
@@ -155,12 +171,13 @@ namespace Gamecloud
 		/// </summary>
 		/// <param name="hash">GainAchievememt hash.</param>
 		/// <param name="playerId">Player identifier.</param>
-		public void gainAchievement(string hash, string playerId) 
+		/// <param name="callback">The callback function for results.</param>
+		public void gainAchievement(string hash, string playerId, Callback callback) 
 		{
 			// Create the call, no need for characterId so it is null
 			Hashtable data = createCall(hash, playerId, null);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 
 		/// <summary>
@@ -168,12 +185,13 @@ namespace Gamecloud
 		/// </summary>
 		/// <param name="hash">ASK Achievement hash.</param>
 		/// <param name="playerId">Player identifier.</param>
-		public void askAchievement(string hash, string playerId)
+		/// <param name="callback">The callback function for results.</param>
+		public void askAchievement(string hash, string playerId, Callback callback)
 		{
 			// Create the call, no need for characterId so it is null
 			Hashtable data = createCall(hash, playerId, null);
 			// Send the data to Gamecloud
-			SendData(data);
+			SendData(data, callback);
 		}
 		
 
@@ -183,7 +201,8 @@ namespace Gamecloud
 		/// <param name="data">
 		/// The properly formated data, done by using the createCall function with proper information.
 		/// </param>
-		protected void SendData(Hashtable data) 
+		/// <param name="callback">The callback function for results.</param>
+		protected void SendData(Hashtable data, Callback callback) 
 		{
 			// When you pass a Hashtable as the third argument, we assume you want it send as JSON-encoded
 			// data.  We'll encode it to JSON for you and set the Content-Type header to application/json
@@ -198,13 +217,18 @@ namespace Gamecloud
 				Hashtable result = request.response.Object;
 				if ( result == null )
 				{
-					Debug.LogWarning( "Could not parse JSON response!" );
+					callback("Count not parse JSON response!", null);
 					return;
 				}
 
-				Debug.Log(request.response.Text);
+				// Things succeeded, send the result
+				callback(null, request.response.Text);
 				
 			});
 		}
+	
+
 	}
+
+
 }
