@@ -30,9 +30,9 @@ namespace Gamecloud
 		/// Error text received if something goes wrong
 		/// </param>
 		/// <param name="result">
-		/// The resulting string when things go okay
+		/// The resulting JSON Object (as a Hashtable)
 		/// </param>
-		public delegate void Callback(string error, string result);
+		public delegate void Callback(string error, Hashtable result);
 
 		//The list of all dictionaries for storing different information
 		public Dictionary<string, string> GetItemsDict = new Dictionary<string, string>();
@@ -222,7 +222,7 @@ namespace Gamecloud
 				}
 
 				// Things succeeded, send the result
-				callback(null, request.response.Text);
+				callback(null, request.response.Object);
 				
 			});
 		}
