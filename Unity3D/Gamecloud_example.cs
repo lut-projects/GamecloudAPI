@@ -31,7 +31,7 @@ public class Gamecloud_example : MonoBehaviour {
 	/// An example of method class that is used to instatiate callbacks.
 	/// Create your own methods here and instantiate them, whenever you want to add your own
 	/// functionality to the system.
-	/// You should use JSON.JsonDecode to decode the results returned by the gamecloud backend
+	/// You should use JSON.JsonEncode to read the results as a JSON string
 	/// </summary>
 	/// 
 	///
@@ -41,20 +41,24 @@ public class Gamecloud_example : MonoBehaviour {
 		/// Example of using the methods
 		/// </summary>
 		/// <param name="error">Error message that is received if something goes wrong.</param>
-		/// <param name="message">The result message when things work out.</param>
-		public void ExampleMethod(string error, string message)
+		/// <param name="result">The result as a JSON object when things work out.</param>
+		public void ExampleMethod(string error, Hashtable result)
 		{
-			if (error)
+			if (error != null)
 			{
 				Debug.LogError(error);
 			}
-			// Okay, no problems found, just continue :-D
-			Debug.Log (message);
+
+			// To encode the message into a JSON string
+			Debug.Log (JSON.JsonEncode(result));
+			// And to read a specific JSON value from the received JSON Object (=Hashtable)
+			Debug.Log ("Amount of entries found:" + result["count"].ToString());
+
 		}
 
-		public void ASecondMethod(string error, string message)
+		public void ASecondMethod(string error, Hashtable result)
 		{
-			if (error)
+			if (error != null)
 			{
 				Debug.LogError(error);
 			}
