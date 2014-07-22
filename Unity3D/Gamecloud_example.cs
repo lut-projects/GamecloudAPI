@@ -21,14 +21,27 @@ public class Gamecloud_example : MonoBehaviour {
 		Debug.Log("Started");
 
 		//gamecloud.gainAchievement(gamecloud.GiveAchievementsDict["LutTestAchievement1"], "TestPlayer");
+		// Example of querying for player having an achievement WITH callback
 		gamecloud.askAchievement(gamecloud.AskAchievementsDict["LutTestAchievement1"], "TestPlayer", new MethodClass().ExampleMethod);
 
 	}
 
 
-
+	/// <summary>
+	/// An example of method class that is used to instatiate callbacks.
+	/// Create your own methods here and instantiate them, whenever you want to add your own
+	/// functionality to the system.
+	/// You should use JSON.JsonDecode to decode the results returned by the gamecloud backend
+	/// </summary>
+	/// 
+	///
 	public class MethodClass 
 	{
+		/// <summary>
+		/// Example of using the methods
+		/// </summary>
+		/// <param name="error">Error message that is received if something goes wrong.</param>
+		/// <param name="message">The result message when things work out.</param>
 		public void ExampleMethod(string error, string message)
 		{
 			if (error)
