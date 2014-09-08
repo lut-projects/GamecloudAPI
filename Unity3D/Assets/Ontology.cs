@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System;
+
 
 
 /// <summary>
@@ -31,6 +33,30 @@ public enum Types
 	{
 		// Do Stuff!
 		Debug.Log("Create Button Pressed!");
+		Debug.Log(CreateSessionId());
 	}
 
+	/// <summary>
+	/// Creates the session identifier.
+	/// </summary>
+	/// <returns>The session identifier string.</returns>
+	public string CreateSessionId()
+	{
+		// Create the random session
+		string sessionId = "Session" + GetISOTimeInUTC() + KeyGenerator.GetUniqueKey(10);
+		// And return the results
+		return sessionId;
+	}
+
+	/// <summary>
+	/// Gets the ISO time in UT.
+	/// </summary>
+	/// <returns>The ISO time in UT.</returns>
+	public string GetISOTimeInUTC()
+	{
+		return DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzz");
+	}
  }
+
+
+
