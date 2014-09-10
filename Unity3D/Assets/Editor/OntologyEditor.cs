@@ -2,16 +2,12 @@
 using UnityEditor;
 using System.Collections;
 
-/// <summary>
-/// Ontology editor for handling Ontology-type Unity3D classes in the Editor GUI window.
-/// </summary>
-[CustomEditor(typeof(Ontology))]
-public class OntologyEditor : Editor {
 
-	// Private values for holding the user selections from the 
-	// ontology type and subtype dropdown selectors
-	private int selected = 0;
-	private int subSelected = 0;
+[CustomEditor(typeof(Ontology))]
+public class OntologyEditor : Editor 
+{
+
+	public int actionSelected;
 
 	/// <summary>
 	/// Raises the inspector GU event.
@@ -24,17 +20,9 @@ public class OntologyEditor : Editor {
 		// TODO: Fix this to be something else (we don't want to show everything probably)
 		DrawDefaultInspector ();
 
-		// Create a helper box to explain what this is all about
-		EditorGUILayout.HelpBox("This is used to define the metadata (ontology) for the item/event/achievement to be used in the gamecloud", MessageType.Info);
-
-		// Checks the Ontology type selection from the GUI
+		// Choose the action type from the list
 		ChooseSelection(myTarget);
-
-		// Creates the ontology when the user presses the "Create Ontology Button"
-		if(GUILayout.Button("Create Ontology"))
-		{
-			myTarget.CreateOntology();
-		}
+		
 
 	}
 
@@ -48,106 +36,77 @@ public class OntologyEditor : Editor {
 		switch(myTarget.Type)
 		{
 		case Types.Event:
-			ChooseEventSubType(myTarget);
-			break;
-		case Types.Achievement:
-			ChooseAchievementSubType(myTarget);
+			SelectEventAction(myTarget);
 			break;
 		case Types.Item:
-			ChooseItemSubType(myTarget);
+			SelectItemAction(myTarget);
+			break;
+		case Types.Achievement:
+			SelectAchievementAction(myTarget);
 			break;
 		default:
 			throw new UnityException("Faulty Ontology Type Selected!");
 		}
-
+		
 	}
 
-	/// <summary>
-	/// Chooses the sub type of the event
-	/// </summary>
-	/// <param name="myTarget">The target script for this editor extension</param>
-	private void ChooseEventSubType(Ontology myTarget)
+	public void SelectEventAction(Ontology myTarget)
 	{
-		string[] options = new string[]
+
+		string[] actions = new string[]
 		{
-			"InAppPurchaseEvent",
-			"PlayerEvent",
-			"GameEvent",
-			"MenuEvent"
+			"Ask",
+			"Trigger",
 		};
 		
-		this.selected = EditorGUILayout.Popup("Subtype", this.selected, options);
-
+		this.actionSelected = EditorGUILayout.Popup("ActionType", this.actionSelected, actions);
+		
 		// Check if the already existing selected value is higher than the existing options
 		// e.g. you have selected from different type and list that has more options (achievement)
 		// if so, make the selected to be 0, in order to prevent errors
-		if(this.selected > options.Length) {
-			selected = 0;
+		if(this.actionSelected > actions.Length) {
+			this.actionSelected = 0;
 		}
-		myTarget.SubType = options[this.selected];
-
-		// If we have game event
-		if (this.selected == 2)
-		{
-			string[] subOptions = new string[]
-			{
-				"GainEvent",
-				"LoseEvent"
-			};
-
-			this.subSelected = EditorGUILayout.Popup("Lower Subtype", this.subSelected, subOptions);
-			myTarget.SubType = subOptions[this.subSelected];
-		}
+		myTarget.ActionType = actions[this.actionSelected];
 	}
 
-	/// <summary>
-	/// Chooses the sub type of the achievement
-	/// </summary>
-	/// <param name="myTarget">The target script for this editor extension</param>
-	private void ChooseAchievementSubType(Ontology myTarget)
+	public void SelectItemAction(Ontology myTarget)
 	{
-		string[] options = new string[]
+		
+		string[] actions = new string[]
 		{
-			"Fandom",
-			"Veteran",
-			"Minigame",
-			"Loyalty",
-			"Paragon",
-			"Luck",
-			"Veteran",
-			"HardMode",
-			"Tutorial",
-			"Collection",
-			"Virtuosity",
-			"Completion",
-			"Curiosity",
-			"SpecialPlayStyle"
+			"Ask",
+			"Gain",
+			"Lose"
 		};
 		
-		this.selected = EditorGUILayout.Popup("Subtype", this.selected, options);
-		myTarget.SubType = options[this.selected];
+		this.actionSelected = EditorGUILayout.Popup("ActionType", this.actionSelected, actions);
+
+		myTarget.ActionType = actions[this.actionSelected];
+		
 	}
 
-	/// <summary>
-	/// Chooses the subtype for the item
-	/// </summary>
-	/// <param name="myTarget">The target script for this editor extension</param>
-	private void ChooseItemSubType(Ontology myTarget)
+
+	public void SelectAchievementAction(Ontology myTarget)
 	{
-		string[] options = new string[]
+		
+		string[] actions = new string[]
 		{
-			"None"
+			"Ask",
+			"Gain"
 		};
 		
-		this.selected = EditorGUILayout.Popup("Subtype", this.selected, options);
-
+		this.actionSelected = EditorGUILayout.Popup("ActionType", this.actionSelected, actions);
+		
 		// Check if the already existing selected value is higher than the existing options
 		// e.g. you have selected from different type and list that has more options (achievement)
 		// if so, make the selected to be 0, in order to prevent errors
-		if(this.selected > options.Length) {
-			selected = 0;
+		if(this.actionSelected > actions.Length) {
+			this.actionSelected = 0;
 		}
-		myTarget.SubType = options[this.selected];
+		myTarget.ActionType = actions[this.actionSelected];
 	}
 	
+
+
 }

@@ -24,6 +24,15 @@ namespace Gamecloud
 		}
 
 		/// <summary>
+		/// Changes the server address.
+		/// </summary>
+		/// <param name="serverAddress">Server address.</param>
+		public void ChangeServerAddress(string serverAddress)
+		{
+			this.SERVER_ADDRESS = serverAddress;
+		}
+
+		/// <summary>
 		/// Delegate for callbacks
 		/// </summary>
 		/// <param name="error">
