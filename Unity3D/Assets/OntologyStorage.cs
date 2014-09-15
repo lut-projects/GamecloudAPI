@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class OntologyStorage : MonoBehaviour {
+public class OntologyStorage {
 
 	/// Types of different storages existing
 	public enum OntologyStorageType
@@ -34,36 +34,6 @@ public class OntologyStorage : MonoBehaviour {
 	public void AddToStorage(OntologyStorageType storageType, string name, string hash)
 	{
 		GetStorage(storageType).Add(name, hash);
-		/*
-		switch(storageType)
-		{
-		case OntologyStorageType.GetItems:
-			GetItemsDict.Add(name, hash);
-			break;
-		case OntologyStorageType.GainItems:
-			GainItemsDict.Add(name, hash);
-			break;
-		case OntologyStorageType.LoseItems:
-			LoseItemsDict.Add(name, hash);
-			break;
-		case OntologyStorageType.AskAchievements:
-			AskAchievementsDict.Add(name, hash);
-			break;
-		case OntologyStorageType.GiveAchievements:
-			GiveAchievementsDict.Add(name, hash);
-			break;
-		case OntologyStorageType.TriggerEvents:
-			TriggerEventsDict.Add(name, hash);
-			break;
-		case OntologyStorageType.HasTriggeredEvents:
-			HasTriggeredEventsDict.Add(name, hash);
-			break;
-		default:
-			throw new UnityException("OntologyStorageType was not recognized: " + storageType.ToString());
-			break;
-		} // End of switch
-
-		*/
 	}
 
 	/// <summary>

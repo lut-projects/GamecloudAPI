@@ -50,6 +50,12 @@ public class OntologyGeneratorEditor : Editor {
 			myTarget.CreateOntology();
 		}
 
+        // Creates a button for checking gamecloud connection
+        if(GUILayout.Button("Test Connection"))
+        {
+            myTarget.TestConnection();
+        }
+
 	}
 
 	/// <summary>

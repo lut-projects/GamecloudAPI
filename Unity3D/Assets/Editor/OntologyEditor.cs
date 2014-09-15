@@ -8,6 +8,7 @@ public class OntologyEditor : Editor
 {
 
 	public int actionSelected;
+    public int selectedHash;
 
 	/// <summary>
 	/// Raises the inspector GU event.
@@ -22,9 +23,47 @@ public class OntologyEditor : Editor
 
 		// Choose the action type from the list
 		ChooseSelection(myTarget);
+
+        // Select the wanted hash from the refreshed listing
+        SelectHash(myTarget);
+
+        // Creates the ontology when the user presses the "Create Ontology Button"
+        if (GUILayout.Button("Get Listing"))
+        {
+            myTarget.RefreshListing();
+        }
 		
 
 	}
+
+    /// <summary>
+    /// Selects the hash from the options menu
+    /// </summary>
+    /// <param name="myTarget">The Ontology</param>
+    private void SelectHash(Ontology myTarget)
+    {
+        // Check if there are more than 0 items in the Listing.Count
+        if (myTarget.Listing.Count <= 0)
+        {
+            return;
+        }
+        // Otherwise, keep on going
+        // Create the string list as long as the count
+        string[] listing = new string[myTarget.Listing.Count];
+        // Then loop through it, populating as you go
+        int i = 0;
+        foreach(string item in myTarget.Listing)
+        {
+            // Add the item to listing
+            listing[i] = item;
+            i++;
+        }
+        // Then, get the selected hash
+        this.selectedHash = EditorGUILayout.Popup("ActionName", this.selectedHash, listing);
+
+        // Then, set the Action name and retrieve the hash
+        myTarget.SetActionName(myTarget.Listing[this.selectedHash]);
+    }
 
 	/// <summary>
 	/// Chooses between what type the user has selected from the ontology type dropdown box

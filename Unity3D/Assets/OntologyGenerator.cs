@@ -23,6 +23,7 @@ public enum Types
 
 	public Dictionary<string, string> AchievementsDictionary = new Dictionary<string, string>();
 	public string GamecloudAddress = "http://";
+    public string Authkey = "";
 
 	// Public values for displaying/editing the ontology stub
 	public string Name = "";
@@ -40,6 +41,12 @@ public enum Types
 		Debug.Log("Create Button Pressed!");
 		Debug.Log(CreateSessionId());
 	}
+
+     public void TestConnection()
+    {
+         // Test the connection
+        Debug.Log("Testing connection");
+    }
 
 	/// <summary>
 	/// Creates the session identifier.
