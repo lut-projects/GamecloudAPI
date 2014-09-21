@@ -211,6 +211,13 @@ namespace Gamecloud
 			SendData(data, callback);
 		}
 
+		/// <summary>
+		/// Authenticate the specified username, password, callback and synchronous.
+		/// </summary>
+		/// <param name="username">Username.</param>
+		/// <param name="password">Password.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="synchronous">If set to <c>true</c> synchronous.</param>
 		public void Authenticate(string username, string password, Callback callback, bool synchronous=false)
 		{
 			// Create the Login JSOn
@@ -224,6 +231,12 @@ namespace Gamecloud
 
 		}
 
+		/// <summary>
+		/// Gets from server.
+		/// </summary>
+		/// <param name="addressWithQuery">Address with query.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="synchronous">If set to <c>true</c> synchronous.</param>
 		public void GetFromServer(string addressWithQuery, GetCallback callback, bool synchronous=false)
 		{
 			HTTP.Request theRequest = new HTTP.Request("get", addressWithQuery);

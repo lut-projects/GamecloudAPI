@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Security.Cryptography;
+using System;
+using System.Text;
 
 public class OntologyEditorWindow : EditorWindow
 {
@@ -98,12 +101,33 @@ public class OntologyEditorWindow : EditorWindow
 		}
 	}
 
+	/// <summary>
+	/// Login method for authenticating with the Gamecloud
+	/// </summary>
 	private void Login()
 	{
+		// First, hash the password
+		SHA512 hasher = new SHA512Managed();
+		UnicodeEncoding encoding = new UnicodeEncoding();
+		byte[] hashResult = hasher.ComputeHash(encoding.GetBytes(GamecloudPass));
+
+		// Then, loop over to get the result hash in string representation
+		string hash = "";
+		foreach (byte x in hashResult)
+		{
+			hash += String.Format("{0:x2}", x);
+		}
+
+		Debug.Log(hash);
 		// Send the message to the server
-		gamecloud.Authenticate(GamecloudUser, GamecloudPass, LoginCallback, true);
+		gamecloud.Authenticate(GamecloudUser, hash, LoginCallback, true);
 	}
 
+	/// <summary>
+	/// Callback for the Login
+	/// </summary>
+	/// <param name="error">Error.</param>
+	/// <param name="result">Result.</param>
 	private void LoginCallback(string error, Hashtable result)
 	{
 		if (error != null)
