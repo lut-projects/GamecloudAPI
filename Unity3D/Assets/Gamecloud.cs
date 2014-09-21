@@ -211,6 +211,19 @@ namespace Gamecloud
 			SendData(data, callback);
 		}
 
+		public void Authenticate(string username, string password, Callback callback, bool synchronous=false)
+		{
+			// Create the Login JSOn
+			Hashtable loginJson = new Hashtable();
+			loginJson.Add("callType", "authenticate");
+			loginJson.Add("username", username);
+			loginJson.Add("password", password);
+
+			// Then, send it to the server
+			SendData(loginJson, callback, synchronous);
+
+		}
+
 		public void GetFromServer(string addressWithQuery, GetCallback callback, bool synchronous=false)
 		{
 			HTTP.Request theRequest = new HTTP.Request("get", addressWithQuery);
@@ -223,6 +236,9 @@ namespace Gamecloud
 			}
 			// Once we get the result
 			theRequest.Send(( request) => {
+
+				// First, check the type of the response
+				CheckForStatusCode(request.response);
 				// Just return the result text to callback
 				callback(request.response.Text);
 			});
@@ -235,13 +251,24 @@ namespace Gamecloud
 		/// The properly formated data, done by using the createCall function with proper information.
 		/// </param>
 		/// <param name="callback">The callback function for results.</param>
-		protected void SendData(Hashtable data, Callback callback) 
+		/// <param name="synchronous">Whether to do synchronous (for EditorUI) or async call</param>
+		protected void SendData(Hashtable data, Callback callback, bool synchronous=false) 
 		{
 			// When you pass a Hashtable as the third argument, we assume you want it send as JSON-encoded
 			// data.  We'll encode it to JSON for you and set the Content-Type header to application/json
 			HTTP.Request theRequest = new HTTP.Request( "post", SERVER_ADDRESS, data );
+
+			// If synchronous method has been requested
+			if(synchronous)
+			{
+				// Add a field making it synchronous
+				theRequest.synchronous = true;
+			}
 			theRequest.Send( ( request ) => {
-				
+
+				// First, check the type of the response
+				CheckForStatusCode(request.response);
+
 				// we provide Object and Array convenience methods that attempt to parse the response as JSON
 				// if the response cannot be parsed, we will return null
 				// note that if you want to send json that isn't either an object ({...}) or an array ([...])
@@ -258,6 +285,26 @@ namespace Gamecloud
 				callback(null, request.response.Object);
 				
 			});
+		}
+
+		/// <summary>
+		/// Function for Checking status codes of the received messages
+		/// </summary>
+		/// <param name="response">Response.</param>
+		private void CheckForStatusCode(HTTP.Response response)
+		{
+			switch(response.status) 
+			{
+			case 200:
+				Debug.Log("200 - Message sent & received succesfully");
+				break;
+			case 500:
+				Debug.LogError("500 - Internal Server Error (something in your JSON was malformed?");
+				break;
+			default:
+				Debug.LogError("Got number, that we have not yet defined in the checker: " + response.status.ToString());
+				break;
+			}
 		}
 	
 

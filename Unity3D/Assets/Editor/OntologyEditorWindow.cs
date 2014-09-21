@@ -19,7 +19,7 @@ public class OntologyEditorWindow : EditorWindow
 	private int selected = 0;
 	private int subSelected = 0;
 	private int actionSelected = 0;
-	private Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud("http://", "as");
+	private Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud("http://example.com", "auth");
 	private OntologyEdito ontologyGenerator = new OntologyEdito();
 
 
@@ -91,8 +91,28 @@ public class OntologyEditorWindow : EditorWindow
 		
 		if(GUILayout.Button("Login", GUILayout.MaxWidth(MAX_WIDTH)))
 		{
-			// Log in, test the connection
+			// Make sure, that we have the proper address
+			gamecloud.ChangeServerAddress(GamecloudAddress);
+			// Authenticate with gamecloud
+			Login();
 		}
+	}
+
+	private void Login()
+	{
+		// Send the message to the server
+		gamecloud.Authenticate(GamecloudUser, GamecloudPass, LoginCallback, true);
+	}
+
+	private void LoginCallback(string error, Hashtable result)
+	{
+		if (error != null)
+		{
+			Debug.LogError(error);
+		}
+		
+		// To encode the message into a JSON string
+		Debug.Log (JSON.JsonEncode(result));
 	}
 
 	/// <summary>
