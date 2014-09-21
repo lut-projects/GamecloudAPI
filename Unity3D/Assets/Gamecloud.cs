@@ -43,6 +43,14 @@ namespace Gamecloud
 		/// </param>
 		public delegate void Callback(string error, Hashtable result);
 
+		/// <summary>
+		/// Delegate for the GET callbacks
+		/// </summary>
+		/// <param name="resultText">
+		/// Resulting text from the GET
+		/// </param>
+		public delegate void GetCallback(string resultText);
+
 		//The list of all dictionaries for storing different information
 		public Dictionary<string, string> GetItemsDict = new Dictionary<string, string>();
 		public Dictionary<string, string> GainItemsDict = new Dictionary<string, string>();
@@ -202,7 +210,23 @@ namespace Gamecloud
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
-		
+
+		public void GetFromServer(string addressWithQuery, GetCallback callback, bool synchronous=false)
+		{
+			HTTP.Request theRequest = new HTTP.Request("get", addressWithQuery);
+
+			// If synchronous method is requested
+			if (synchronous)
+			{
+				// Add field making it synchronous
+				theRequest.synchronous = true;
+			}
+			// Once we get the result
+			theRequest.Send(( request) => {
+				// Just return the result text to callback
+				callback(request.response.Text);
+			});
+		}
 
 		/// <summary>
 		/// Sends the data in proper JSON format to the Gamecloud

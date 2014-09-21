@@ -5,13 +5,13 @@ using System.Collections;
 public class OntologyEditorWindow : EditorWindow
 {
 	// Gamecloud connection settings
-	public string GamecloudAddress = "http://";
+	public string GamecloudAddress = "http://as";
 	public string GamecloudUser = "";
 	public string GamecloudPass = "";
 	// End of Connection settings
 
 
-	private float MAX_WIDTH = 100;
+	private float MAX_WIDTH = 300;
 
 	private string GameName = "";
 
@@ -83,7 +83,7 @@ public class OntologyEditorWindow : EditorWindow
 		// Creates a button for checking gamecloud connection
 		if(GUILayout.Button("Test Connection", GUILayout.MaxWidth(MAX_WIDTH)))
 		{
-			ontologyGenerator.TestConnection();
+			this.TestConnection();
 		}
 
 		GamecloudUser = EditorGUILayout.TextField("Username", GamecloudUser, GUILayout.MaxWidth(MAX_WIDTH));
@@ -93,6 +93,27 @@ public class OntologyEditorWindow : EditorWindow
 		{
 			// Log in, test the connection
 		}
+	}
+
+	/// <summary>
+	/// Tests the connection to Gamecloud.
+	/// </summary>
+	private void TestConnection()
+	{
+		// Add a test string to the given address
+		string testString = GamecloudAddress + "/?callType=xyzzy";
+
+		// Then, perform the query
+		gamecloud.GetFromServer(testString, ConnectionTestCallback, true);
+	}
+
+	/// <summary>
+	/// A callback function for TestConnection()
+	/// </summary>
+	/// <param name="message">The message received from the server</param>
+	public void ConnectionTestCallback(string message)
+	{
+		Debug.Log(message);
 	}
 
 	/// <summary>
