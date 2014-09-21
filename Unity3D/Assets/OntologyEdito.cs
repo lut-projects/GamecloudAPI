@@ -1,37 +1,31 @@
-using System.Collections;
-using UnityEngine;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System;
 
-
-
-/// <summary>
-/// Enumerates the types of ontology that we have existing in the system
-/// </summary>
-public enum Types 
+public enum MyTypes
 {
-	Achievement,
-	Event,
-	Item
-}
+	Achievement = 0,
+	Event = 1,
+	Item = 2
+};
 
 /// <summary>
 /// Public class (the main thing to use) for creating & managing ontologies in the system
 /// </summary>
- public class OntologyGenerator : MonoBehaviour {
-
-
+public class OntologyEdito {
+	
+	
 	public Dictionary<string, string> AchievementsDictionary = new Dictionary<string, string>();
 	public string GamecloudAddress = "http://";
-    public string Authkey = "";
-
+	public string Authkey = "";
+	
 	// Public values for displaying/editing the ontology stub
 	public string Name = "";
 	public Types Type;
 	public string SubType = "";
 	public string Description = "";
 	public string ActionType = "";
-
+	
 	/// <summary>
 	/// Creates the ontology.
 	/// </summary>
@@ -41,13 +35,13 @@ public enum Types
 		//Debug.Log("Create Button Pressed!");
 		//Debug.Log(CreateSessionId());
 	}
-
-     public void TestConnection()
-    {
-         // Test the connection
-        //Debug.Log("Testing connection");
-    }
-
+	
+	public void TestConnection()
+	{
+		// Test the connection
+		//Debug.Log("Testing connection");
+	}
+	
 	/// <summary>
 	/// Creates the session identifier.
 	/// </summary>
@@ -59,7 +53,7 @@ public enum Types
 		// And return the results
 		return sessionId;
 	}
-
+	
 	/// <summary>
 	/// Gets the ISO time in UT.
 	/// </summary>
@@ -68,7 +62,7 @@ public enum Types
 	{
 		return DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzz");
 	}
- }
+}
 
 
 
