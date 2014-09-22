@@ -232,6 +232,25 @@ namespace Gamecloud
 		}
 
 		/// <summary>
+		/// Gets the games of the user from the server.
+		/// </summary>
+		/// <param name="creator">Creator.</param>
+		/// <param name="authkey">Authkey.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="synchronous">If set to <c>true</c> synchronous.</param>
+		public void GetGames(string creator, string authkey, Callback callback, bool synchronous=false)
+		{
+			// Create a GetGames JSON
+			Hashtable getGamesJson = new Hashtable();
+			getGamesJson.Add("callType", "getGames");
+			getGamesJson.Add("authkey", authkey);
+			getGamesJson.Add("creator", creator);
+
+			// Then, make the call
+			SendData(getGamesJson, callback, synchronous);
+		}
+
+		/// <summary>
 		/// Gets from server.
 		/// </summary>
 		/// <param name="addressWithQuery">Address with query.</param>
@@ -267,6 +286,8 @@ namespace Gamecloud
 		/// <param name="synchronous">Whether to do synchronous (for EditorUI) or async call</param>
 		protected void SendData(Hashtable data, Callback callback, bool synchronous=false) 
 		{
+			Debug.Log(JSON.JsonEncode(data));
+
 			// When you pass a Hashtable as the third argument, we assume you want it send as JSON-encoded
 			// data.  We'll encode it to JSON for you and set the Content-Type header to application/json
 			HTTP.Request theRequest = new HTTP.Request( "post", SERVER_ADDRESS, data );
@@ -290,7 +311,7 @@ namespace Gamecloud
 				Hashtable result = request.response.Object;
 				if ( result == null )
 				{
-					callback("Count not parse JSON response!", null);
+					callback("Could not parse JSON response!", null);
 					return;
 				}
 

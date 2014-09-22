@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System;
 using System.Text;
@@ -25,7 +26,9 @@ public class OntologyEditorWindow : EditorWindow
 	private Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud("http://example.com", "auth");
 	private OntologyEdito ontologyGenerator = new OntologyEdito();
 
-
+	// For holding the information of the games of the creator
+	private string[] gamesList;
+	private int _selectedGame = 0;
 
 	string myString = "Hello World";
 	bool groupEnabled;
@@ -68,10 +71,60 @@ public class OntologyEditorWindow : EditorWindow
 	private void CreateGameView()
 	{
 		GUILayout.Label("Select/Create Current Game", EditorStyles.boldLabel);
+		// Create a button for fetching games
+		if(GUILayout.Button ("Fetch Games", GUILayout.MaxWidth(MAX_WIDTH)))
+		{
+			this.GetGames();
+		}
 		// Set the name of the game
 		EditorGUILayout.HelpBox("The name of the game you are working with (no spaces please!)", MessageType.Info);
-		this.GameName = EditorGUILayout.TextField("Game Name", this.GameName, GUILayout.MaxWidth(MAX_WIDTH));
 
+		// Now, select the game
+		this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
+	}
+
+	/// <summary>
+	/// Gets the games from the server.
+	/// </summary>
+	private void GetGames()
+	{
+		// Get the games of the user from the gamecloud
+		gamecloud.GetGames("ex:" + this.GamecloudUser, "authkey", GetGamesCallback, true);
+	}
+
+	/// <summary>
+	/// Callback used when requesting for game listing from the backend	
+	/// </summary>
+	/// <param name="error">Error.</param>
+	/// <param name="result">Result.</param>
+	private void GetGamesCallback(string error, Hashtable result)
+	{
+		// Encode to show the entires
+		Debug.Log(JSON.JsonEncode(result));
+		// Create an array list in order to parse through the etnries
+		ArrayList list = (ArrayList)result["entries"];
+
+		// Get the amount of games in the listing
+		gamesList = new string[list.Count];
+		for (int i=0; i<list.Count; i++)
+		{
+			// Cast each entry as a hashtable
+			Hashtable entry = (Hashtable)list[i];
+			// Then, add the game to the listing
+			gamesList[i] = this.RemoveURI(entry["game"].ToString());
+		}
+
+	}
+	
+	/// <summary>
+	/// Removes the URI part from the given string.
+	/// </summary>
+	/// <returns>The string without URI.</returns>
+	/// <param name="entry">Entry.</param>
+	private string RemoveURI(string entry)
+	{
+		// Remove the starting part of the URI from the received entry
+		return entry.Replace("http://example.org/", "");
 	}
 
 	/// <summary>
