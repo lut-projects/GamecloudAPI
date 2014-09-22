@@ -124,11 +124,91 @@ public class OntologyEditorWindow : EditorWindow
 		// e.g. Instantiate it!
 		Debug.Log("Starting generation of the selection to Project");
 		// Fetch the Gain/Lose/Ask hashes from the server
-
-		// Then, instantiate an ontology, that contains all this information into the project
-
+		gamecloud.GetHashesOfEntry("auth", this.GetExistingOntologySelected(), this.SelectedViewType, GetHashesOfEntryCallback, true);
 	}
 
+	/// <summary>
+	/// The callback for getting hashes of a certain entry
+	/// </summary>
+	/// <param name="error">Error.</param>
+	/// <param name="result">Result.</param>
+	public void GetHashesOfEntryCallback(string error, Hashtable result)
+	{
+		// Once we get the results
+		// We should instantiate an ontology, that contains all this information
+		// And put it into the project as a Unity GameObject
+		Debug.Log(JSON.JsonEncode(result));
+
+		// Ookay, we can read the returned type here
+		if(result["type"].ToString() == "Achievement")
+		{
+			Debug.Log("We got an Achievement reply");
+
+			// Then, we need to parse the gain & ask hashes
+			ArrayList list = (ArrayList)result["hashes"];
+
+			string gainHash = "";
+			string askHash = "";
+			string name = "";
+
+			// Loop over the lists
+			foreach (Hashtable entry in list)
+			{
+				Debug.Log (JSON.JsonEncode(entry));
+
+				// If we have the proper hashes
+				if(entry.ContainsKey("askHash"))
+				{
+					// Figure out the type
+					gainHash = entry["gainHash"].ToString();
+					askHash = entry["askHash"].ToString();
+					name = this.RemoveURI(entry["name"].ToString());
+				}
+
+
+			} // End of foreach
+
+			Debug.Log("Name: " + name + " gainHash: " + gainHash + " askHash: " + askHash);
+		}
+
+		else if (result["type"].ToString() == "Event")
+		{
+			Debug.Log("We got an Event reply");
+
+			// Then, we need to parse the trigger & ask hashes
+			ArrayList list = (ArrayList)result["hashes"];
+
+			string triggerHash = "";
+			string askHash = "";
+			string askName = "";
+			string triggerName = "";
+
+			// Loop over the lists
+			foreach(Hashtable entry in list)
+			{
+				Debug.Log(JSON.JsonEncode(entry));
+
+				// If we have the proper hashes
+				if(entry.ContainsKey("askHash"))
+				{
+					// Figure out the contents
+					askHash = entry["askHash"].ToString();
+					askName = this.RemoveURI(entry["name"].ToString());
+				}
+				if(entry.ContainsKey("triggerHash"))
+				{
+					triggerHash = entry["triggerHash"].ToString();
+					triggerName = this.RemoveURI(entry["name"].ToString());
+				}
+			} // End of foreach
+
+			Debug.Log("AskName: " + askName + " AskHash: " + askHash + " TriggerName: " + triggerName + " TriggerHash: " + triggerHash);
+		}
+		else if (result["type"].ToString() == "Item")
+		{
+			Debug.Log("We got an Item reply");
+		}
+	}
 
 
 	/// <summary>

@@ -267,10 +267,6 @@ namespace Gamecloud
 			json.Add("name", "ex:" + entryName);
 			json.Add("type", type);
 
-			// Log now for debugging what we are asking
-			Debug.Log("Getting hash with following query");
-			Debug.Log(JSON.JsonEncode(json));
-
 			// Then, send it forwards
 			SendData(json, callback, synchrounous);
 		}
