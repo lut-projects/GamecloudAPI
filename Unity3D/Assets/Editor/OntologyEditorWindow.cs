@@ -23,6 +23,11 @@ public class OntologyEditorWindow : EditorWindow
 	private int _selectedOntologyViewType = 0;
 	private string SelectedViewType = "";
 
+	// For holding the listing of existing ontologies
+	private int _selectedExistingOntology = 0;
+	private string[] existingOntologiesList;
+	private string[] existingOntologiesDescription;
+
 	// Settings
 	private int selected = 0;
 	private int subSelected = 0;
@@ -87,7 +92,45 @@ public class OntologyEditorWindow : EditorWindow
 		{
 			gamecloud.GetOntologiesByGame(this.SelectedViewType, GetGameName(), "auth", GetOntologiesByGameCallback, true);
 		}
+
+		// If there are more than 0 elements
+		if (this.existingOntologiesList.Length > 0)
+		{
+			// Now, select the game
+			this._selectedExistingOntology = EditorGUILayout.Popup("Select Ontology", this._selectedExistingOntology, this.existingOntologiesList, GUILayout.MaxWidth(MAX_WIDTH));
+			// Also, show the description
+			// Make sure the listing exists
+			if (this.existingOntologiesDescription.Length > 0)
+			{
+				GUILayout.Label("Description:");
+				GUILayout.Box(this.existingOntologiesDescription[this._selectedExistingOntology]);
+			}
+
+			// And then create a button enabling adding this to the project
+			if (GUILayout.Button("Generate in Project", GUILayout.MaxWidth(MAX_WIDTH)))
+			{
+				GenerateSelectionToProject();
+			}
+		
+		}
 	}
+
+	/// <summary>
+	/// Generates the selected ontology type to the project and instantiates a Gameobject for it.
+	/// </summary>
+	private void GenerateSelectionToProject()
+	{
+		// TODO: Generate the wanted ontology into the project here
+		// e.g. Instantiate it!
+		Debug.Log("Starting generation of the selection to Project");
+		// Fetch the Gain/Lose/Ask hashes from the server
+
+		// Then, instantiate an ontology, that contains all this information into the project
+
+	}
+
+
+
 	/// <summary>
 	/// The callback for getting ontologies
 	/// </summary>
@@ -97,8 +140,38 @@ public class OntologyEditorWindow : EditorWindow
 	{
 		Debug.Log(JSON.JsonEncode(result));
 
-		// TODO: Here we should populate a whole list of ontology entries found
+		// Create an array list in order to parse through the etnries
+		ArrayList list = (ArrayList)result["entries"];
+		
+		// Get the amount of games in the listing
+		existingOntologiesList = new string[list.Count];
+		// Also, add the description listing
+		existingOntologiesDescription = new string[list.Count];
+		for (int i=0; i<list.Count; i++)
+		{
+			// Cast each entry as a hashtable
+			Hashtable entry = (Hashtable)list[i];
+			// Then, add the game to the listing
+			// Selecting by the type we are using
 
+			if (this.SelectedViewType == "Item")
+			{
+				existingOntologiesList[i] = this.RemoveURI(entry["item"].ToString());
+			}
+			else if (this.SelectedViewType == "Event")
+			{
+				existingOntologiesList[i] = this.RemoveURI(entry["event"].ToString());
+			}
+			else if (this.SelectedViewType == "Achievement")
+			{
+				existingOntologiesList[i] = this.RemoveURI(entry["achievement"].ToString());
+			}
+
+			// Also, add the comments
+			existingOntologiesDescription[i] = entry["comment"].ToString();
+
+		}
+		
 	}
 
 	/// <summary>
@@ -145,6 +218,15 @@ public class OntologyEditorWindow : EditorWindow
 			this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
 		}
 
+	}
+
+	/// <summary>
+	/// Gets the existing ontology selected.
+	/// </summary>
+	/// <returns>The existing ontology selected.</returns>
+	private string GetExistingOntologySelected()
+	{
+		return this.existingOntologiesList[this._selectedExistingOntology];
 	}
 
 	/// <summary>

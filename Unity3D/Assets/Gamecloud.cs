@@ -250,6 +250,39 @@ namespace Gamecloud
 			SendData(getGamesJson, callback, synchronous);
 		}
 
+		/// <summary>
+		/// Gets the hashes of entry.
+		/// </summary>
+		/// <param name="authkey">Authkey.</param>
+		/// <param name="entryName">Entry name.</param>
+		/// <param name="type">Type.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="synchrounous">If set to <c>true</c> synchrounous.</param>
+		public void GetHashesOfEntry(string authkey, string entryName, string type, Callback callback, bool synchrounous=false)
+		{
+			// Create the JSON for getting the hashes
+			Hashtable json = new Hashtable();
+			json.Add("callType", "getHashes");
+			json.Add("authkey", authkey);
+			json.Add("name", "ex:" + entryName);
+			json.Add("type", type);
+
+			// Log now for debugging what we are asking
+			Debug.Log("Getting hash with following query");
+			Debug.Log(JSON.JsonEncode(json));
+
+			// Then, send it forwards
+			SendData(json, callback, synchrounous);
+		}
+
+		/// <summary>
+		/// Gets the ontologies by game.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="game">Game.</param>
+		/// <param name="authkey">Authkey.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="synchronous">If set to <c>true</c> synchronous.</param>
 		public void GetOntologiesByGame(string type, string game, string authkey, Callback callback, bool synchronous=false)
 		{
 			// Create the JSON
