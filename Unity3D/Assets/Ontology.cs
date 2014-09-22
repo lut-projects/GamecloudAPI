@@ -53,6 +53,7 @@ public class Ontology : MonoBehaviour
         catch (KeyNotFoundException e)
         {
             // Just ignore;
+			Debug.Log(e);
         }
     }
 

@@ -250,6 +250,12 @@ namespace Gamecloud
 			SendData(getGamesJson, callback, synchronous);
 		}
 
+		public void CreateOntologyEntry(Hashtable json, Callback callback, bool synchronous=false)
+		{
+			// Just pass the call onwards
+			SendData(json, callback, synchronous);
+		}
+
 		/// <summary>
 		/// Gets from server.
 		/// </summary>

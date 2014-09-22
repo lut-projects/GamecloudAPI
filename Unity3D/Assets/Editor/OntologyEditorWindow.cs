@@ -239,8 +239,23 @@ public class OntologyEditorWindow : EditorWindow
 		// Creates the ontology when the user presses the "Create Ontology Button"
 		if(GUILayout.Button("Create Ontology", GUILayout.MaxWidth(MAX_WIDTH)))
 		{
-			ontologyGenerator.CreateOntology();
+			// Create the json for sending to backend
+			Hashtable json = ontologyGenerator.CreateOntology(gamesList[this._selectedGame]);
+
+			// And then CALL
+			gamecloud.CreateOntologyEntry(json, CreateOntologyEntryCallback, true);
 		}
+	}
+
+	/// <summary>
+	/// Creates the ontology entry callback.
+	/// </summary>
+	/// <param name="error">Error.</param>
+	/// <param name="result">Result.</param>
+	private void CreateOntologyEntryCallback(string error, Hashtable result)
+	{
+		// And here we just want to parse the stuff first
+		Debug.Log(JSON.JsonEncode(result));
 	}
 
 	/// <summary>
