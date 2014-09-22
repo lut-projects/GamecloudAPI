@@ -250,6 +250,43 @@ namespace Gamecloud
 			SendData(getGamesJson, callback, synchronous);
 		}
 
+		public void GetOntologiesByGame(string type, string game, string authkey, Callback callback, bool synchronous=false)
+		{
+			// Create the JSON
+			Hashtable json = new Hashtable();
+
+			// Get the types here
+			if (type == "Achievement")
+			{
+				json.Add("callType", "getAchievementsByGame");
+			}
+			else if (type == "Event")
+			{
+				json.Add("callType", "getEventsByGame");
+			}
+			else if (type == "Item")
+			{
+				json.Add("callType", "getItemsByGame");
+			}
+
+			// Next, add the authkey
+			json.Add("authkey", authkey);
+			// Then, add the creator id
+			json.Add("game", "ex:" + game);
+
+			Debug.Log("Sending");
+			Debug.Log(JSON.JsonEncode(json));
+
+			// Then, send for processing
+			SendData(json, callback, synchronous);
+		}
+
+		/// <summary>
+		/// Creates the ontology entry.
+		/// </summary>
+		/// <param name="json">Json.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="synchronous">If set to <c>true</c> synchronous.</param>
 		public void CreateOntologyEntry(Hashtable json, Callback callback, bool synchronous=false)
 		{
 			// Just pass the call onwards

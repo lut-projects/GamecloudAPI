@@ -14,10 +14,14 @@ public class OntologyEditorWindow : EditorWindow
 	public string GamecloudPass = "";
 	// End of Connection settings
 
+	private bool enableNewOntologyEntry = false;
+	private bool showExistingOntologies = true;
 
 	private float MAX_WIDTH = 300;
 
-	private string GameName = "";
+	// For holding information when selecting existing ontology types
+	private int _selectedOntologyViewType = 0;
+	private string SelectedViewType = "";
 
 	// Settings
 	private int selected = 0;
@@ -54,15 +58,70 @@ public class OntologyEditorWindow : EditorWindow
 		// Second, create the select game / new game part
 		CreateGameView();
 		// Third, create the Create new ontology part
-		CreateOntologyView();
-
-		/*
-		if (ontologyGenerator.AchievementsDictionary.Count == 0) 
+		// Start with creating a checkbox 
+		this.enableNewOntologyEntry = EditorGUILayout.Toggle("Show New Ontology Entry", this.enableNewOntologyEntry);
+		if (this.enableNewOntologyEntry)
 		{
-			ontologyGenerator.AchievementsDictionary.Add("One", "FirstLongHash");
-			ontologyGenerator.AchievementsDictionary.Add("Two", "SecondHash");
-		}*/
+			CreateOntologyView();
+		}
+		// Fourth, show the existing ontologies
+		this.showExistingOntologies = EditorGUILayout.Toggle("Show Existing Ontologies", this.showExistingOntologies);
+		if (this.showExistingOntologies)
+		{
+			DisplayOntologiesView();
+		}
 
+	}
+
+	/// <summary>
+	/// Displays the ontologies view.
+	/// </summary>
+	private void DisplayOntologiesView()
+	{
+		// Add the header
+		GUILayout.Label("Display Existing Ontologies", EditorStyles.boldLabel);
+		// First, create a dropdown selector for the type of ontologies to show
+		ChooseOntologyViewType();
+		// Next, draw the action button for updating the selection
+		if(GUILayout.Button("Fetch types", GUILayout.MaxWidth(MAX_WIDTH)))
+		{
+			gamecloud.GetOntologiesByGame(this.SelectedViewType, GetGameName(), "auth", GetOntologiesByGameCallback, true);
+		}
+	}
+	/// <summary>
+	/// The callback for getting ontologies
+	/// </summary>
+	/// <param name="error">Error.</param>
+	/// <param name="result">Result.</param>
+	public void GetOntologiesByGameCallback(string error, Hashtable result)
+	{
+		Debug.Log(JSON.JsonEncode(result));
+
+		// TODO: Here we should populate a whole list of ontology entries found
+
+	}
+
+	/// <summary>
+	/// Chooses the type of the ontology for showing in the view.
+	/// </summary>
+	private void ChooseOntologyViewType()
+	{
+		string[] options = new string[]
+		{
+			"Achievement",
+			"Event",
+			"Item"
+		};
+		
+		this._selectedOntologyViewType = EditorGUILayout.Popup("Ontology Type", this._selectedOntologyViewType, options, GUILayout.MaxWidth(MAX_WIDTH));
+		
+		// Check if the already existing selected value is higher than the existing options
+		// e.g. you have selected from different type and list that has more options (achievement)
+		// if so, make the selected to be 0, in order to prevent errors
+		if(this._selectedOntologyViewType > options.Length) {
+			this._selectedOntologyViewType = 0;
+		}
+		this.SelectedViewType = options[this._selectedOntologyViewType];
 	}
 
 	/// <summary>
@@ -79,8 +138,22 @@ public class OntologyEditorWindow : EditorWindow
 		// Set the name of the game
 		EditorGUILayout.HelpBox("The name of the game you are working with (no spaces please!)", MessageType.Info);
 
-		// Now, select the game
-		this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
+		// If there are more than 0 elements
+		if (this.gamesList.Length > 0)
+		{
+			// Now, select the game
+			this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
+		}
+
+	}
+
+	/// <summary>
+	/// Gets the name of the game.
+	/// </summary>
+	/// <returns>The game name.</returns>
+	private string GetGameName()
+	{
+		return this.gamesList[this._selectedGame];
 	}
 
 	/// <summary>
