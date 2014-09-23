@@ -126,6 +126,84 @@ public class OntologyEditorWindow : EditorWindow
 		// Fetch the Gain/Lose/Ask hashes from the server
 		gamecloud.GetHashesOfEntry("auth", this.GetExistingOntologySelected(), this.SelectedViewType, GetHashesOfEntryCallback, true);
 	}
+	
+	void BuilOntologyObject (Types type, string name, string askHash, string gainHash, string loseHash)
+	{
+		// Start with Instantiating the new ontology object
+		GameObject gameObject = new GameObject(name);
+		gameObject.AddComponent<OntologyObject>().DefineOntology(type, name, askHash, gainHash, loseHash);
+	
+		//OntologyObject ontologyObject = new OntologyObject();
+
+		// Next, define the object types
+		//ontologyObject.DefineOntology(type, name, askHash, gainHash, loseHash);
+
+		// And job is done :-D
+
+	}
+
+	void ExtractAndBuilAchievementGameObject (ArrayList list)
+	{
+		// Prepare to extract all the required info from the result JSON
+		string gainHash = "";
+		string askHash = "";
+		string name = "";
+
+		// Loop over the lists
+		foreach (Hashtable entry in list)
+		{
+			// If we have the proper hashes
+			if(entry.ContainsKey("askHash"))
+			{
+				// Figure out the type
+				gainHash = entry["gainHash"].ToString();
+				askHash = entry["askHash"].ToString();
+				name = this.RemoveURI(entry["name"].ToString());
+			}
+		}
+
+		Debug.Log("Name: " + name + " gainHash: " + gainHash + " askHash: " + askHash);
+
+		// Okay, now we really need to BUILD the ontology GameObject
+		BuilOntologyObject(Types.Achievement, name, askHash, gainHash, null);
+
+	} // End of ExtractAndBuilAchievementGameObject
+
+	void ExtractAndBuilEventGameObject (ArrayList list)
+	{
+		// Prepare to extract all the required info from the result JSON
+		string triggerHash = "";
+		string askHash = "";
+		string askName = "";
+		string triggerName = "";
+
+		// Loop over the lists
+		foreach (Hashtable entry in list)
+		{
+			// If we have the proper hashes
+			if(entry.ContainsKey("askHash"))
+			{
+				// Figure out the contents
+				askHash = entry["askHash"].ToString();
+				askName = this.RemoveURI(entry["name"].ToString());
+			}
+			if(entry.ContainsKey("triggerHash"))
+			{
+				triggerHash = entry["triggerHash"].ToString();
+				triggerName = this.RemoveURI(entry["name"].ToString());
+			}
+		}
+
+		
+		// Now, start creating the stuff
+		Debug.Log("AskName: " + askName + " AskHash: " + askHash + " TriggerName: " + triggerName + " TriggerHash: " + triggerHash);
+
+	} // End of ExtractAndBuilEventGameObject 
+
+	void ExtractAndBuildItemGameObject (ArrayList list)
+	{
+		throw new NotImplementedException ();
+	} // End of ExtractAndBuildItemGameObject
 
 	/// <summary>
 	/// The callback for getting hashes of a certain entry
@@ -139,6 +217,28 @@ public class OntologyEditorWindow : EditorWindow
 		// And put it into the project as a Unity GameObject
 		Debug.Log(JSON.JsonEncode(result));
 
+		// Get the type
+		string resultType = result["type"].ToString();
+
+		// Next, parse the results into a list
+		ArrayList list = (ArrayList)result["hashes"];
+
+		// Then, Act according to the type of the result we got
+		if (resultType.Equals("Achievement"))
+		{
+			ExtractAndBuilAchievementGameObject(list);
+		}
+		else if (resultType.Equals("Event"))
+		{
+			ExtractAndBuilEventGameObject(list);
+		}
+		else if (resultType.Equals("Item"))
+		{
+			ExtractAndBuildItemGameObject(list);
+		}
+
+
+		/*
 		// Ookay, we can read the returned type here
 		if(result["type"].ToString() == "Achievement")
 		{
@@ -146,10 +246,6 @@ public class OntologyEditorWindow : EditorWindow
 
 			// Then, we need to parse the gain & ask hashes
 			ArrayList list = (ArrayList)result["hashes"];
-
-			string gainHash = "";
-			string askHash = "";
-			string name = "";
 
 			// Loop over the lists
 			foreach (Hashtable entry in list)
@@ -208,6 +304,10 @@ public class OntologyEditorWindow : EditorWindow
 		{
 			Debug.Log("We got an Item reply");
 		}
+
+		*/
+
+
 	}
 
 
@@ -292,7 +392,7 @@ public class OntologyEditorWindow : EditorWindow
 		EditorGUILayout.HelpBox("The name of the game you are working with (no spaces please!)", MessageType.Info);
 
 		// If there are more than 0 elements
-		if (this.gamesList.Length > 0)
+		if ((this.gamesList.Length > 0) || (this.gamesList != null))
 		{
 			// Now, select the game
 			this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
@@ -358,8 +458,11 @@ public class OntologyEditorWindow : EditorWindow
 	/// <param name="entry">Entry.</param>
 	private string RemoveURI(string entry)
 	{
+		// Remove, if we get ex: in the start
+		entry = entry.Replace("ex:", "");
 		// Remove the starting part of the URI from the received entry
-		return entry.Replace("http://example.org/", "");
+		entry.Replace("http://example.org/", "");
+		return entry;
 	}
 
 	/// <summary>
