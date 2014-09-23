@@ -10,6 +10,9 @@ public class OntologyObject : MonoBehaviour {
 	public Types Type;
 
 	public GameObject gameObject;
+	public GameObject askGameObject;
+	public GameObject gainGameObject;
+	public GameObject loseGameObject;
 
 	public void DefineOntology(Types type, string name, string askHash, string gainHash, string loseHash)
 	{
