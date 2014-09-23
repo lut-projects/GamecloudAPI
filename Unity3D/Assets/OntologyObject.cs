@@ -9,7 +9,7 @@ public class OntologyObject : MonoBehaviour {
 	public string AskHash;
 	public Types Type;
 
-
+	public GameObject gameObject;
 
 	public void DefineOntology(Types type, string name, string askHash, string gainHash, string loseHash)
 	{
