@@ -39,11 +39,6 @@ public class OntologyEditorWindow : EditorWindow
 	private string[] gamesList;
 	private int _selectedGame = 0;
 
-	string myString = "Hello World";
-	bool groupEnabled;
-	bool myBool = true;
-	float myFloat = 1.23f;
-
 	/// <summary>
 	/// Shows the window in Unity Editor.
 	/// </summary>
