@@ -9,11 +9,15 @@ public class Gamecloud_example : MonoBehaviour {
 	private static string DEV_ADDR = "http://";
 
 	//Gamecloud.Gamecloud gameCloud = new Gamecloud.Gamecloud(DEV_ADDR, "NO_AUTH");
-	Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud(DEV_ADDR, "as");
+	Gamecloud.Gamecloud gamecloud = Gamecloud.Gamecloud.Instance; // new Gamecloud.Gamecloud(DEV_ADDR, "as");
 
 	// Use this for initialization
 	void Start () 
 	{
+		// Set the gamecloud address and authkey
+		gamecloud.ChangeServerAddress(DEV_ADDR);
+		gamecloud.ChangeAuthkey("NO_AUTH");
+
 		// Add the entries here
 		gamecloud.AskAchievementsDict.Add("LutTestAchievement1", "gfno7um8erkymn29");
 		gamecloud.GiveAchievementsDict.Add("LutTestAchievement1", "nn0mklr14z9i19k9");

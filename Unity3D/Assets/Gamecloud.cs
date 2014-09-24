@@ -5,21 +5,56 @@ using System.Collections.Generic;
 namespace Gamecloud 
 {
 
-	public class Gamecloud {
+	public sealed class Gamecloud {
 
-	
+		private static volatile Gamecloud instance;
+		private static object syncRoot = new object();
+
 		private string SERVER_ADDRESS = "";
 		private string authkey = "";
+
+		/// <summary>
+		/// Gets the instance.
+		/// </summary>
+		/// <value>The instance.</value>
+		public static Gamecloud Instance
+		{
+			get
+			{
+				if (instance == null)
+				{
+					lock(syncRoot)
+					{
+						if (instance == null)
+						{
+							instance = new Gamecloud();
+						}
+					}
+				}
+				return instance;
+			}
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Gamecloud.Gamecloud"/> class.
 		/// </summary>
 		/// <param name="serverAddress">The address of the server to use e.g. http://gamecloud.lut.fi:8888.</param>
 		/// <param name="authkey">Your company's authentication key to use.</param>
-		public Gamecloud(string serverAddress, string authkey)
+		private Gamecloud(/*string serverAddress, string authkey*/)
 		{
+			this.SERVER_ADDRESS = "";
+			this.authkey = "";
 			// Initialize the starting values
-			this.SERVER_ADDRESS = serverAddress;
+			//this.SERVER_ADDRESS = serverAddress;
+			//this.authkey = authkey;
+		}
+
+		/// <summary>
+		/// Changes the authkey.
+		/// </summary>
+		/// <param name="authkey">Authkey.</param>
+		public void ChangeAuthkey(string authkey)
+		{
 			this.authkey = authkey;
 		}
 

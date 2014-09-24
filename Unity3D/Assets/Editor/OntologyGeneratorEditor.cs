@@ -14,7 +14,7 @@ public class OntologyGeneratorEditor : Editor {
 	private int selected = 0;
 	private int subSelected = 0;
 	private int actionSelected = 0;
-	private Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud("http://", "as");
+	private Gamecloud.Gamecloud gamecloud = Gamecloud.Gamecloud.Instance;//  new Gamecloud.Gamecloud("http://", "as");
 
 
 	/// <summary>

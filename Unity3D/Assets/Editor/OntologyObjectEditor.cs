@@ -75,6 +75,7 @@ public class OntologyObjectEditor : Editor {
 			EditorGUILayout.LabelField("Ask Hash", myTarget.AskHash);
 			DefineCallbackView(myTarget, MethodTypes.Ask);
 			DefineCallbackDropdown (myTarget, MethodTypes.Ask);
+			DefineCallFunction(myTarget, MethodTypes.Ask);
 		}
 
 		// Then, each hash and their appropriate callback helpers if the hash exists
@@ -85,6 +86,7 @@ public class OntologyObjectEditor : Editor {
 			EditorGUILayout.LabelField("Gain Hash", myTarget.GainHash);
 			DefineCallbackView(myTarget, MethodTypes.Gain);
 			DefineCallbackDropdown (myTarget, MethodTypes.Gain);
+			DefineCallFunction(myTarget, MethodTypes.Ask);
 		}
 
 		// Then, each hash and their appropriate callback helpers if the hash exists
@@ -95,7 +97,42 @@ public class OntologyObjectEditor : Editor {
 			EditorGUILayout.LabelField("Lose Hash", myTarget.LoseHash);
 			DefineCallbackView(myTarget, MethodTypes.Lose);
 			DefineCallbackDropdown (myTarget, MethodTypes.Lose);
+			DefineCallFunction(myTarget, MethodTypes.Ask);
 		}
+
+	}
+
+	/// <summary>
+	/// Defines the call function that can be used by the creator to call the defined function from anywhere.
+	/// </summary>
+	/// <param name="myTarget">My target.</param>
+	/// <param name="methodType">Method type.</param>
+	void DefineCallFunction(OntologyObject myTarget, MethodTypes methodType)
+	{
+		// Define the function call text
+		string functionCallText = "OntologyObject script = GameObject.Find(\"" + myTarget.name + "\").GetComponent<OntologyObject>();\n";
+	
+		// Then, switch and add the next part accordingly
+		switch(methodType)
+		{
+		case MethodTypes.Ask:
+			functionCallText += "script.CallAskFunction();";
+			break;
+		case MethodTypes.Gain:
+			functionCallText += "script.CallGainFunction();";
+			break;
+		case MethodTypes.Lose:
+			functionCallText += "script.CallLoseFunction();";
+			break;
+		default:
+			throw new UnityException("DefineCallFunction() - MethodType was something totally unexcpted!");
+		}
+
+		// Add the explanation label
+		EditorGUILayout.LabelField("Use the following code anywhere to call this function");
+
+		// Finally, set the text area accordingly
+		EditorGUILayout.TextArea(functionCallText);
 
 	}
 
@@ -286,12 +323,15 @@ public class OntologyObjectEditor : Editor {
 		{
 		case MethodTypes.Ask:
 			this.askMethods = foundMethods;
+			myTarget.askCallback = GetSelectedMethodName(MethodTypes.Ask);
 			break;
 		case MethodTypes.Gain:
 			this.gainMethods = foundMethods;
+			myTarget.gainCallback = GetSelectedMethodName(MethodTypes.Gain);
 			break;
 		case MethodTypes.Lose:
 			this.loseMethods = foundMethods;
+			myTarget.loseCallback = GetSelectedMethodName(MethodTypes.Lose);
 			break;
 		}
 

@@ -32,7 +32,7 @@ public class OntologyEditorWindow : EditorWindow
 	private int selected = 0;
 	private int subSelected = 0;
 	private int actionSelected = 0;
-	private Gamecloud.Gamecloud gamecloud = new Gamecloud.Gamecloud("http://example.com", "auth");
+	private Gamecloud.Gamecloud gamecloud = Gamecloud.Gamecloud.Instance;// new Gamecloud.Gamecloud("http://example.com", "auth");
 	private OntologyEdito ontologyGenerator = new OntologyEdito();
 
 	// For holding the information of the games of the creator
@@ -386,11 +386,15 @@ public class OntologyEditorWindow : EditorWindow
 		// Set the name of the game
 		EditorGUILayout.HelpBox("The name of the game you are working with (no spaces please!)", MessageType.Info);
 
-		// If there are more than 0 elements
-		if ((this.gamesList.Length > 0) || (this.gamesList != null))
+		// If the list is not null
+		if(this.gamesList != null)
 		{
-			// Now, select the game
-			this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
+			// If there are more than 0 elements
+			if (this.gamesList.Length > 0)
+			{
+				// Now, select the game
+				this._selectedGame = EditorGUILayout.Popup("Games", this._selectedGame, this.gamesList, GUILayout.MaxWidth(MAX_WIDTH));
+			}
 		}
 
 	}
@@ -468,6 +472,8 @@ public class OntologyEditorWindow : EditorWindow
 		// First, the connection testing
 		GUILayout.Label("Gamecloud Connection Settings", EditorStyles.boldLabel);
 		GamecloudAddress = EditorGUILayout.TextField("Gamecloud Address", GamecloudAddress, GUILayout.MaxWidth(MAX_WIDTH));
+		// Set the address to be gamecloud address as well
+		gamecloud.ChangeServerAddress(GamecloudAddress);
 
 		// Creates a button for checking gamecloud connection
 		if(GUILayout.Button("Test Connection", GUILayout.MaxWidth(MAX_WIDTH)))
