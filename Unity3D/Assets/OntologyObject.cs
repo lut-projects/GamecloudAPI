@@ -62,7 +62,7 @@ public class OntologyObject : MonoBehaviour {
 		switch(this.Type)
 		{
 		case Types.Achievement:
-			gamecloud.gainAchievement(GainHash, this.sessionHandler.GetPlayerId(), GainCallback);
+			gamecloud.gainAchievement(GainHash, this.sessionHandler.GetPlayerId(), this.sessionHandler.GetSessionId(), GainCallback);
 			break;
 		case Types.Event:
 			break;
@@ -94,7 +94,7 @@ public class OntologyObject : MonoBehaviour {
 	private void AskCallback(string error, Hashtable result)
 	{
 		Debug.Log("Trying to run the selected callback: " + askCallback);
-		askGameObject.SendMessage(askCallback, new Hashtable());
+		askGameObject.SendMessage(askCallback, result);
 	}
 
 	private void GainCallback(string error, Hashtable result)
@@ -103,13 +103,13 @@ public class OntologyObject : MonoBehaviour {
 			Debug.LogError ("Error: " + error);
 
 		Debug.Log("Trying to run the selected callback: " + gainCallback);
-		gainGameObject.SendMessage(gainCallback, new Hashtable());
+		gainGameObject.SendMessage(gainCallback, result);
 	}
 
 	private void LoseCallback(string error, Hashtable result)
 	{
 		Debug.Log("Trying to run the selected callback: " + loseCallback);
-		loseGameObject.SendMessage(loseCallback, new Hashtable());
+		loseGameObject.SendMessage(loseCallback, result);
 	}
 
 	// Use this for initialization

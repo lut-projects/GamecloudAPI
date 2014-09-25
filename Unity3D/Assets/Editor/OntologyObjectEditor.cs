@@ -110,7 +110,7 @@ public class OntologyObjectEditor : Editor {
 
 		}
 
-		if(GUILayout.Button("Refresh"))
+		if(GUILayout.Button("Change Callback Functions"))
 		{
 			// Always do ASK & GAIN
 			PopulateMethodsInformation(myTarget, MethodTypes.Ask);

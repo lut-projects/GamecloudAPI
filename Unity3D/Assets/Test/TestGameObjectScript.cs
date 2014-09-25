@@ -5,8 +5,9 @@ public class TestGameObjectScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//TestAsk();
-		TestGain();
+		//TestGain();
+		TestAsk();
+
 
 	}
 	

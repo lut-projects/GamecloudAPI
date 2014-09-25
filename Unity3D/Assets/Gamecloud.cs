@@ -116,7 +116,7 @@ namespace Gamecloud
 		/// <param name="hash">The hash for the given query</param>
 		/// <param name="playerId">Player identifier.</param>
 		/// <param name="characterId">Character identifier.</param>
-		protected Hashtable createCall(string hash, string playerId, string characterId) 
+		protected Hashtable createCall(string hash, string playerId, string characterId, string sessionId) 
 		{
 			// Create the hash table
 			Hashtable data = new Hashtable();
@@ -139,6 +139,12 @@ namespace Gamecloud
 				// Add the character ID
 				data.Add("characterId", characterId);
 			}
+			// If there is sessionID
+			if (sessionId != null)
+			{
+				// Add the sessionId
+				data.Add ("sessionId", sessionId);
+			}
 			
 			// Then, return the data
 			return data;
@@ -155,7 +161,7 @@ namespace Gamecloud
 		{
 
 			// Create the call
-			Hashtable data = createCall(hash, playerId, characterId);
+			Hashtable data = createCall(hash, playerId, characterId, null);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -166,11 +172,12 @@ namespace Gamecloud
 		/// <param name="hash">gainItem hash</param>
 		/// <param name="playerId">Player identifier.</param>
 		/// <param name="characterId">Character identifier.</param>
+		/// <param name="sessionId">Session identifier.</param>
 		/// <param name="callback">The callback function for results.</param>
-		public void gainItem(string hash, string playerId, string characterId, Callback callback) 
+		public void gainItem(string hash, string playerId, string characterId, string sessionId, Callback callback) 
 		{
 			// Create the call
-			Hashtable data = createCall(hash, playerId, characterId);
+			Hashtable data = createCall(hash, playerId, characterId, sessionId);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -181,11 +188,12 @@ namespace Gamecloud
 		/// <param name="hash">loseItem hash.</param>
 		/// <param name="playerId">Player identifier.</param>
 		/// <param name="characterId">Character identifier.</param>
+		/// <param name="sessionId">Session identifier.</param>
 		/// <param name="callback">The callback function for results.</param>
-		public void loseItem(string hash, string playerId, string characterId, Callback callback)
+		public void loseItem(string hash, string playerId, string characterId, string sessionId, Callback callback)
 		{
 			// Create the call
-			Hashtable data = createCall(hash, playerId, characterId);
+			Hashtable data = createCall(hash, playerId, characterId, sessionId);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -195,11 +203,12 @@ namespace Gamecloud
 		/// </summary>
 		/// <param name="hash">triggerEvent hash.</param>
 		/// <param name="playerId">Player identifier.</param>
+		/// <param name="sessionId">Session identifier.</param>
 		/// <param name="callback">The callback function for results.</param>
-		public void triggerEvent(string hash, string playerId, Callback callback)
+		public void triggerEvent(string hash, string playerId, string sessionId, Callback callback)
 		{
 			// Create the call, no need for characterId so it is null
-			Hashtable data = createCall(hash, playerId, null);
+			Hashtable data = createCall(hash, playerId, null, sessionId);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -213,7 +222,7 @@ namespace Gamecloud
 		public void askEvent(string hash, string playerId, Callback callback)
 		{
 			// Create the call, no need for characterId so it is null
-			Hashtable data = createCall(hash, playerId, null);
+			Hashtable data = createCall(hash, playerId, null, null);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -223,11 +232,12 @@ namespace Gamecloud
 		/// </summary>
 		/// <param name="hash">GainAchievememt hash.</param>
 		/// <param name="playerId">Player identifier.</param>
+		/// <param name="sessionId">Session identifier.</param>
 		/// <param name="callback">The callback function for results.</param>
-		public void gainAchievement(string hash, string playerId, Callback callback) 
+		public void gainAchievement(string hash, string playerId, string sessionId, Callback callback) 
 		{
 			// Create the call, no need for characterId so it is null
-			Hashtable data = createCall(hash, playerId, null);
+			Hashtable data = createCall(hash, playerId, null, sessionId);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -241,7 +251,7 @@ namespace Gamecloud
 		public void askAchievement(string hash, string playerId, Callback callback)
 		{
 			// Create the call, no need for characterId so it is null
-			Hashtable data = createCall(hash, playerId, null);
+			Hashtable data = createCall(hash, playerId, null, null);
 			// Send the data to Gamecloud
 			SendData(data, callback);
 		}
@@ -443,8 +453,6 @@ namespace Gamecloud
 					callback("Could not parse JSON response!", null);
 					return;
 				}
-
-				Debug.Log (JSON.JsonEncode(result));
 
 				// Things succeeded, send the result
 				callback(null, request.response.Object);
