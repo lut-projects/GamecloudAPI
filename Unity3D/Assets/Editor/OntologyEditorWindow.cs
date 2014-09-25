@@ -465,7 +465,7 @@ public class OntologyEditorWindow : EditorWindow
 		// Remove, if we get ex: in the start
 		entry = entry.Replace("ex:", "");
 		// Remove the starting part of the URI from the received entry
-		entry.Replace("http://example.org/", "");
+		entry = entry.Replace("http://example.org/", "");
 		return entry;
 	}
 
