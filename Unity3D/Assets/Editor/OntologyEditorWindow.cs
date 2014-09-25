@@ -88,25 +88,30 @@ public class OntologyEditorWindow : EditorWindow
 			gamecloud.GetOntologiesByGame(this.SelectedViewType, GetGameName(), "auth", GetOntologiesByGameCallback, true);
 		}
 
-		// If there are more than 0 elements
-		if (this.existingOntologiesList.Length > 0)
+		// Check that there are existing ontologies
+		if (this.existingOntologiesList != null)
 		{
-			// Now, select the game
-			this._selectedExistingOntology = EditorGUILayout.Popup("Select Ontology", this._selectedExistingOntology, this.existingOntologiesList, GUILayout.MaxWidth(MAX_WIDTH));
-			// Also, show the description
-			// Make sure the listing exists
-			if (this.existingOntologiesDescription.Length > 0)
+			// If there are more than 0 elements
+			if (this.existingOntologiesList.Length > 0)
 			{
-				GUILayout.Label("Description:");
-				GUILayout.Box(this.existingOntologiesDescription[this._selectedExistingOntology]);
+				// Now, select the game
+				this._selectedExistingOntology = EditorGUILayout.Popup("Select Ontology", this._selectedExistingOntology, this.existingOntologiesList, GUILayout.MaxWidth(MAX_WIDTH));
+				// Also, show the description
+				// Make sure the listing exists
+				if (this.existingOntologiesDescription.Length > 0)
+				{
+					GUILayout.Label("Description:");
+					GUILayout.Box(this.existingOntologiesDescription[this._selectedExistingOntology]);
+				}
+
+				// And then create a button enabling adding this to the project
+				if (GUILayout.Button("Generate in Project", GUILayout.MaxWidth(MAX_WIDTH)))
+				{
+					GenerateSelectionToProject();
+				}
+			
 			}
 
-			// And then create a button enabling adding this to the project
-			if (GUILayout.Button("Generate in Project", GUILayout.MaxWidth(MAX_WIDTH)))
-			{
-				GenerateSelectionToProject();
-			}
-		
 		}
 	}
 
@@ -494,22 +499,30 @@ public class OntologyEditorWindow : EditorWindow
 	}
 
 	/// <summary>
+	/// Gets the hash for sha512.
+	/// </summary>
+	/// <returns>The sha512 hash.</returns>
+	/// <param name="text">Text to hash.</param>
+	public static string getHashSha512(string text)
+	{
+		byte[] bytes = Encoding.UTF8.GetBytes(text);
+		SHA512Managed hashstring = new SHA512Managed();
+		byte[] hash = hashstring.ComputeHash(bytes);
+		string hashString = string.Empty;
+		foreach (byte x in hash)
+		{
+			hashString += String.Format("{0:x2}", x);
+		}
+		return hashString;
+	}
+
+	/// <summary>
 	/// Login method for authenticating with the Gamecloud
 	/// </summary>
 	private void Login()
 	{
-		// First, hash the password
-		SHA512 hasher = new SHA512Managed();
-		UnicodeEncoding encoding = new UnicodeEncoding();
-		byte[] hashResult = hasher.ComputeHash(encoding.GetBytes(GamecloudPass));
-
-		// Then, loop over to get the result hash in string representation
-		string hash = "";
-		foreach (byte x in hashResult)
-		{
-			hash += String.Format("{0:x2}", x);
-		}
-
+		// Hash the password
+		string hash = getHashSha512(GamecloudPass);
 		Debug.Log(hash);
 		// Send the message to the server
 		gamecloud.Authenticate(GamecloudUser, hash, LoginCallback, true);
@@ -526,7 +539,10 @@ public class OntologyEditorWindow : EditorWindow
 		{
 			Debug.LogError(error);
 		}
-		
+
+		// Set the gamecloud authkey from the result
+		gamecloud.ChangeAuthkey(result["authToken"].ToString());
+
 		// To encode the message into a JSON string
 		Debug.Log (JSON.JsonEncode(result));
 	}

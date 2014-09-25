@@ -37,7 +37,7 @@ public class OntologyObject : MonoBehaviour {
 		switch(Type)
 		{
 		case Types.Achievement:
-			gamecloud.askAchievement(AskHash, "ex:testPlayer44", AskCallback);
+			//gamecloud.askAchievement(AskHash, "ex:testPlayer44", AskCallback);
 			break;
 		case Types.Event:
 			break;
