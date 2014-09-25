@@ -86,7 +86,7 @@ public class OntologyObjectEditor : Editor {
 			EditorGUILayout.LabelField("Gain Hash", myTarget.GainHash);
 			DefineCallbackView(myTarget, MethodTypes.Gain);
 			DefineCallbackDropdown (myTarget, MethodTypes.Gain);
-			DefineCallFunction(myTarget, MethodTypes.Ask);
+			DefineCallFunction(myTarget, MethodTypes.Gain);
 		}
 
 		// Then, each hash and their appropriate callback helpers if the hash exists
@@ -97,7 +97,7 @@ public class OntologyObjectEditor : Editor {
 			EditorGUILayout.LabelField("Lose Hash", myTarget.LoseHash);
 			DefineCallbackView(myTarget, MethodTypes.Lose);
 			DefineCallbackDropdown (myTarget, MethodTypes.Lose);
-			DefineCallFunction(myTarget, MethodTypes.Ask);
+			DefineCallFunction(myTarget, MethodTypes.Lose);
 		}
 
 	}
@@ -111,7 +111,7 @@ public class OntologyObjectEditor : Editor {
 	{
 		// Define the function call text
 		string functionCallText = "OntologyObject script = GameObject.Find(\"" + myTarget.name + "\").GetComponent<OntologyObject>();\n";
-	
+
 		// Then, switch and add the next part accordingly
 		switch(methodType)
 		{
@@ -125,11 +125,12 @@ public class OntologyObjectEditor : Editor {
 			functionCallText += "script.CallLoseFunction();";
 			break;
 		default:
-			throw new UnityException("DefineCallFunction() - MethodType was something totally unexcpted!");
+			throw new UnityException("DefineCallFunction() - MethodType was something totally unexpected!");
 		}
 
 		// Add the explanation label
-		EditorGUILayout.LabelField("Use the following code anywhere to call this function");
+		GUILayout.Label("Use the following code anywhere to call this function", EditorStyles.boldLabel);
+
 
 		// Finally, set the text area accordingly
 		EditorGUILayout.TextArea(functionCallText);
@@ -192,9 +193,12 @@ public class OntologyObjectEditor : Editor {
 			{
 				selectedRequestMethod = 0;
 			}
+
 			// Next, create the selector for the function
 			selectedRequestMethod = EditorGUILayout.Popup(popupString, selectedRequestMethod, requestedMethods);
 		}
+
+
 
 		// And finally, set the chosen value back to appropriate type with the switch
 		switch(methodType)
@@ -310,7 +314,7 @@ public class OntologyObjectEditor : Editor {
 			int i = 0;
 			foreach (MethodInfo method in component.GetType ().GetMethods (flags)) 
 			{
-				Debug.Log (method.Name);
+				//Debug.Log (method.Name);
 				// Put the value to the list
 				foundMethods[i] = method.Name;
 				// And increment the i

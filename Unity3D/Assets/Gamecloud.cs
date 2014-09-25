@@ -10,8 +10,8 @@ namespace Gamecloud
 		private static volatile Gamecloud instance;
 		private static object syncRoot = new object();
 
-		private string SERVER_ADDRESS = "";
-		private string authkey = "";
+		private string SERVER_ADDRESS;
+		private string authkey;
 
 		/// <summary>
 		/// Gets the instance.
@@ -384,6 +384,15 @@ namespace Gamecloud
 		}
 
 		/// <summary>
+		/// Gets the authkey.
+		/// </summary>
+		/// <returns>The authkey.</returns>
+		public string GetAuthkey()
+		{
+			return this.authkey;
+		}
+
+		/// <summary>
 		/// Sends the data in proper JSON format to the Gamecloud
 		/// </summary>
 		/// <param name="data">
@@ -394,6 +403,8 @@ namespace Gamecloud
 		protected void SendData(Hashtable data, Callback callback, bool synchronous=false) 
 		{
 			Debug.Log(JSON.JsonEncode(data));
+
+			Debug.Log("Server Address is: " + SERVER_ADDRESS);
 
 			// When you pass a Hashtable as the third argument, we assume you want it send as JSON-encoded
 			// data.  We'll encode it to JSON for you and set the Content-Type header to application/json
@@ -410,6 +421,16 @@ namespace Gamecloud
 				// First, check the type of the response
 				CheckForStatusCode(request.response);
 
+				// If we got true as the result, we were dealing with pushing of data to the system
+				if (request.response.Text == "true")
+				{
+					// Create a new hashtable
+					Hashtable pushResult = new Hashtable();
+					pushResult.Add("result", true);
+					callback(null, pushResult);
+					return;
+				}
+
 				// we provide Object and Array convenience methods that attempt to parse the response as JSON
 				// if the response cannot be parsed, we will return null
 				// note that if you want to send json that isn't either an object ({...}) or an array ([...])
@@ -418,9 +439,12 @@ namespace Gamecloud
 				Hashtable result = request.response.Object;
 				if ( result == null )
 				{
+					Debug.LogError("Gamecloud.SendDate() - Response result was null");
 					callback("Could not parse JSON response!", null);
 					return;
 				}
+
+				Debug.Log (JSON.JsonEncode(result));
 
 				// Things succeeded, send the result
 				callback(null, request.response.Object);

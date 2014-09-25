@@ -71,6 +71,14 @@ public class OntologyEditorWindow : EditorWindow
 			DisplayOntologiesView();
 		}
 
+		// Set the Server Address to proper place
+		gamecloud.ChangeServerAddress(this.GamecloudAddress);
+
+	}
+
+	public void Update()
+	{
+		GameObject.Find("GamecloudManager").GetComponent<SessionHandler>().SetGamecloudAddress(this.GamecloudAddress);
 	}
 
 	/// <summary>
@@ -428,7 +436,7 @@ public class OntologyEditorWindow : EditorWindow
 	private void GetGames()
 	{
 		// Get the games of the user from the gamecloud
-		gamecloud.GetGames("ex:" + this.GamecloudUser, "authkey", GetGamesCallback, true);
+		gamecloud.GetGames("ex:" + this.GamecloudUser, gamecloud.GetAuthkey(), GetGamesCallback, true);
 	}
 
 	/// <summary>
