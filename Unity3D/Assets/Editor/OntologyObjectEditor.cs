@@ -59,16 +59,13 @@ public class OntologyObjectEditor : Editor {
 	{
 		// Get my target
 		OntologyObject myTarget = (OntologyObject)target;
-		// Draws the default inspector
-		// TODO: Fix this to be something else (we don't want to show everything probably)
-		//DrawDefaultInspector ();
 
 		// Create the views accordingly
 		// First, the name
 		EditorGUILayout.LabelField("Name", myTarget.Name);
 
 		// Then, each hash and their appropriate callback helpers if the hash exists
-		if (myTarget.AskHash != "")
+		if (!myTarget.AskHash.Equals(""))
 		{
 			EditorGUILayout.Separator();
 			GUILayout.Label("ASK", EditorStyles.boldLabel);
@@ -79,7 +76,7 @@ public class OntologyObjectEditor : Editor {
 		}
 
 		// Then, each hash and their appropriate callback helpers if the hash exists
-		if (myTarget.GainHash != "")
+		if (!myTarget.GainHash.Equals(""))
 		{
 			EditorGUILayout.Separator();
 			GUILayout.Label("GAIN", EditorStyles.boldLabel);
@@ -89,8 +86,9 @@ public class OntologyObjectEditor : Editor {
 			DefineCallFunction(myTarget, MethodTypes.Gain);
 		}
 
+
 		// Then, each hash and their appropriate callback helpers if the hash exists
-		if (myTarget.LoseHash != "")
+		if (!myTarget.LoseHash.Equals(""))
 		{
 			EditorGUILayout.Separator();
 			GUILayout.Label("LOSE", EditorStyles.boldLabel);
@@ -130,7 +128,6 @@ public class OntologyObjectEditor : Editor {
 
 		// Add the explanation label
 		GUILayout.Label("Use the following code anywhere to call this function", EditorStyles.boldLabel);
-
 
 		// Finally, set the text area accordingly
 		EditorGUILayout.TextArea(functionCallText);
@@ -176,7 +173,7 @@ public class OntologyObjectEditor : Editor {
 		// Check if the methods are still null
 		if (requestedMethods == null)
 		{
-			Debug.Log("Requested method null for type: " + methodType.ToString());
+			//Debug.Log("Requested method null for type: " + methodType.ToString());
 
 			// Check that the gameobject is not null
 			if (requestedGameObject != null)
@@ -189,30 +186,42 @@ public class OntologyObjectEditor : Editor {
 		else 
 		{
 			// If the selection is greater than the amount of options
-			if (selectedRequestMethod > requestedMethods.Length)
+			if ((selectedRequestMethod > requestedMethods.Length) || (selectedRequestMethod == null))
 			{
 				selectedRequestMethod = 0;
 			}
 
+			if(methodType == MethodTypes.Lose)
+			{
+				Debug.Log ("We  have LOSE type trying to paint itself!");
+			}
+
 			// Next, create the selector for the function
-			selectedRequestMethod = EditorGUILayout.Popup(popupString, selectedRequestMethod, requestedMethods);
+			// FIX
+			//selectedRequestMethod = EditorGUILayout.Popup(popupString, selectedRequestMethod, requestedMethods);
+
+			// And finally, set the chosen value back to appropriate type with the switch
+			switch(methodType)
+			{
+			case MethodTypes.Ask:
+				//this._selectedAskMethod = selectedRequestMethod;
+				this._selectedAskMethod = EditorGUILayout.Popup(popupString, this._selectedAskMethod, this.askMethods);
+				break;
+			case MethodTypes.Gain:
+				this._selectedGainMethod = selectedRequestMethod;
+				break;
+			case MethodTypes.Lose:
+				this._selectedLoseMethod = selectedRequestMethod;
+				break;
+			}
+
 		}
 
 
+	}
 
-		// And finally, set the chosen value back to appropriate type with the switch
-		switch(methodType)
-		{
-		case MethodTypes.Ask:
-			this._selectedAskMethod = selectedRequestMethod;
-			break;
-		case MethodTypes.Gain:
-			this._selectedGainMethod = selectedRequestMethod;
-			break;
-		case MethodTypes.Lose:
-			this._selectedLoseMethod = selectedRequestMethod;
-			break;
-		}
+	public void Update()
+	{
 
 	}
 

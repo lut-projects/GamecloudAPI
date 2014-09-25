@@ -18,7 +18,7 @@ public class SessionHandler : MonoBehaviour {
 		// Start the session
 		StartSession();
 		// Create a fake player ID, if one doesn't exist
-		if(this.PlayerId == null)
+		if((this.PlayerId == null) || (this.PlayerId == ""))
 		{
 			this.PlayerId = "ex:testPlayer";
 		}

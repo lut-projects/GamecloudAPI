@@ -140,11 +140,6 @@ public class OntologyEditorWindow : EditorWindow
 		// Start with Instantiating the new ontology object
 		GameObject gameObject = new GameObject(name);
 		gameObject.AddComponent<OntologyObject>().DefineOntology(type, name, askHash, gainHash, loseHash);
-	
-		//OntologyObject ontologyObject = new OntologyObject();
-
-		// Next, define the object types
-		//ontologyObject.DefineOntology(type, name, askHash, gainHash, loseHash);
 
 		// And job is done :-D
 
@@ -173,7 +168,7 @@ public class OntologyEditorWindow : EditorWindow
 		Debug.Log("Name: " + name + " gainHash: " + gainHash + " askHash: " + askHash);
 
 		// Okay, now we really need to BUILD the ontology GameObject
-		BuilOntologyObject(Types.Achievement, name, askHash, gainHash, null);
+		BuilOntologyObject(Types.Achievement, name, askHash, gainHash, "");
 
 	} // End of ExtractAndBuilAchievementGameObject
 

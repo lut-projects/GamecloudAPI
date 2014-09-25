@@ -6,9 +6,9 @@ using Gamecloud;
 public class OntologyObject : MonoBehaviour {
 
 	public string Name;
-	public string GainHash;
-	public string LoseHash;
-	public string AskHash;
+	public string GainHash = "";
+	public string LoseHash = "";
+	public string AskHash = "";
 	public Types Type;
 
 	public GameObject gameObject;
