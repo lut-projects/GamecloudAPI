@@ -14,13 +14,13 @@ public enum MethodTypes
 [CustomEditor(typeof(OntologyObject))]
 public class OntologyObjectEditor : Editor {
 
-	private string[] askMethods;
+	private string[] askMethods = null;
 	private int _selectedAskMethod = 0;
 
-	private string[] gainMethods;
+	private string[] gainMethods = null;
 	private int _selectedGainMethod = 0;
 
-	private string[] loseMethods;
+	private string[] loseMethods = null;
 	private int _selectedLoseMethod = 0;
 
 	// Flags to show the members of this instance and their declared public members
@@ -42,10 +42,16 @@ public class OntologyObjectEditor : Editor {
 		switch(methodType)
 		{
 		case MethodTypes.Ask:
+			if ((this.askMethods == null) || (this._selectedAskMethod == null))
+				return null;
 			return this.askMethods[this._selectedAskMethod];
 		case MethodTypes.Gain:
+			if ((this.gainMethods == null)  || (this._selectedGainMethod == null))
+				return null;
 			return this.gainMethods[this._selectedGainMethod];
 		case MethodTypes.Lose:
+			if ((this.loseMethods == null  || (this._selectedLoseMethod == null)))
+				return null;
 			return this.loseMethods[this._selectedLoseMethod];
 		default:
 			throw new UnityException("GetSelectedMethodName() - Should not be able to get here!");
@@ -69,10 +75,12 @@ public class OntologyObjectEditor : Editor {
 		{
 			EditorGUILayout.Separator();
 			GUILayout.Label("ASK", EditorStyles.boldLabel);
+			DisplaySelectedFunction(myTarget, MethodTypes.Ask);
 			EditorGUILayout.LabelField("Ask Hash", myTarget.AskHash);
 			DefineCallbackView(myTarget, MethodTypes.Ask);
 			DefineCallbackDropdown (myTarget, MethodTypes.Ask);
 			DefineCallFunction(myTarget, MethodTypes.Ask);
+
 		}
 
 		// Then, each hash and their appropriate callback helpers if the hash exists
@@ -80,10 +88,12 @@ public class OntologyObjectEditor : Editor {
 		{
 			EditorGUILayout.Separator();
 			GUILayout.Label("GAIN", EditorStyles.boldLabel);
+			DisplaySelectedFunction(myTarget, MethodTypes.Gain);
 			EditorGUILayout.LabelField("Gain Hash", myTarget.GainHash);
 			DefineCallbackView(myTarget, MethodTypes.Gain);
 			DefineCallbackDropdown (myTarget, MethodTypes.Gain);
 			DefineCallFunction(myTarget, MethodTypes.Gain);
+
 		}
 
 
@@ -92,12 +102,51 @@ public class OntologyObjectEditor : Editor {
 		{
 			EditorGUILayout.Separator();
 			GUILayout.Label("LOSE", EditorStyles.boldLabel);
+			DisplaySelectedFunction(myTarget, MethodTypes.Lose);
 			EditorGUILayout.LabelField("Lose Hash", myTarget.LoseHash);
 			DefineCallbackView(myTarget, MethodTypes.Lose);
 			DefineCallbackDropdown (myTarget, MethodTypes.Lose);
 			DefineCallFunction(myTarget, MethodTypes.Lose);
+
 		}
 
+		if(GUILayout.Button("Refresh"))
+		{
+			// Always do ASK & GAIN
+			PopulateMethodsInformation(myTarget, MethodTypes.Ask);
+			PopulateMethodsInformation(myTarget, MethodTypes.Gain);
+
+			if (!myTarget.LoseHash.Equals(""))
+			{
+				PopulateMethodsInformation(myTarget, MethodTypes.Lose);
+			}
+
+
+		}
+
+	}
+
+	/// <summary>
+	/// Displaies the selected function information on ASK/GAIN/LOSE
+	/// </summary>
+	/// <param name="myTarget">My target.</param>
+	/// <param name="methodType">Method type.</param>
+	void DisplaySelectedFunction(OntologyObject myTarget, MethodTypes methodType)
+	{
+		switch(methodType)
+		{
+		case MethodTypes.Ask:
+			EditorGUILayout.LabelField("Selected ASK callback", myTarget.askCallback, EditorStyles.boldLabel);
+			break;
+		case MethodTypes.Gain:
+			EditorGUILayout.LabelField("Selected GAIN callback", myTarget.gainCallback, EditorStyles.boldLabel);
+			break;
+		case MethodTypes.Lose:
+			EditorGUILayout.LabelField("Selected LOSE callback", myTarget.loseCallback, EditorStyles.boldLabel);
+			break;
+		default:
+			throw new UnityException("DisplaySelectedFunction() - Went in to default, which should not be possible!");
+		}
 	}
 
 	/// <summary>
@@ -179,7 +228,7 @@ public class OntologyObjectEditor : Editor {
 			if (requestedGameObject != null)
 			{
 				// Well, we need to do the extraction of public methods again
-				PopulateMethodsInformation(myTarget, methodType);
+				//PopulateMethodsInformation(myTarget, methodType);
 			}
 
 		} // Otherwise, start selecting
@@ -198,20 +247,22 @@ public class OntologyObjectEditor : Editor {
 
 			// Next, create the selector for the function
 			// FIX
-			//selectedRequestMethod = EditorGUILayout.Popup(popupString, selectedRequestMethod, requestedMethods);
+			selectedRequestMethod = EditorGUILayout.Popup(popupString, selectedRequestMethod, requestedMethods);
 
 			// And finally, set the chosen value back to appropriate type with the switch
 			switch(methodType)
 			{
 			case MethodTypes.Ask:
-				//this._selectedAskMethod = selectedRequestMethod;
-				this._selectedAskMethod = EditorGUILayout.Popup(popupString, this._selectedAskMethod, this.askMethods);
+				this._selectedAskMethod = selectedRequestMethod;
+				myTarget.askCallback = GetSelectedMethodName(MethodTypes.Ask);
 				break;
 			case MethodTypes.Gain:
 				this._selectedGainMethod = selectedRequestMethod;
+				myTarget.gainCallback = GetSelectedMethodName(MethodTypes.Gain);
 				break;
 			case MethodTypes.Lose:
 				this._selectedLoseMethod = selectedRequestMethod;
+				myTarget.loseCallback = GetSelectedMethodName(MethodTypes.Lose);
 				break;
 			}
 
@@ -292,7 +343,10 @@ public class OntologyObjectEditor : Editor {
 	/// <param name="myTarget">My target.</param>
 	void PopulateMethodsInformation (OntologyObject myTarget, MethodTypes methodType)
 	{
+
 		GameObject selectedGameobject;
+
+
 		string[] foundMethods = new string[0];
 
 
@@ -301,14 +355,26 @@ public class OntologyObjectEditor : Editor {
 		switch(methodType)
 		{
 		case MethodTypes.Ask:
+			if (this.tempAskObject == null)
+			{
+				return;
+			}
 			myTarget.askGameObject = this.tempAskObject;
 			selectedGameobject = myTarget.askGameObject;
 			break;
 		case MethodTypes.Gain:
+			if (this.tempGainObject == null)
+			{
+				return;
+			}
 			myTarget.gainGameObject = this.tempGainObject;
 			selectedGameobject = myTarget.gainGameObject;
 			break;
 		case MethodTypes.Lose:
+			if(this.tempLoseObject == null)
+			{
+				return;
+			}
 			myTarget.loseGameObject = this.tempLoseObject;
 			selectedGameobject = myTarget.loseGameObject;
 			break;
@@ -336,15 +402,15 @@ public class OntologyObjectEditor : Editor {
 		{
 		case MethodTypes.Ask:
 			this.askMethods = foundMethods;
-			myTarget.askCallback = GetSelectedMethodName(MethodTypes.Ask);
+			//myTarget.askCallback = GetSelectedMethodName(MethodTypes.Ask);
 			break;
 		case MethodTypes.Gain:
 			this.gainMethods = foundMethods;
-			myTarget.gainCallback = GetSelectedMethodName(MethodTypes.Gain);
+			//myTarget.gainCallback = GetSelectedMethodName(MethodTypes.Gain);
 			break;
 		case MethodTypes.Lose:
 			this.loseMethods = foundMethods;
-			myTarget.loseCallback = GetSelectedMethodName(MethodTypes.Lose);
+			//myTarget.loseCallback = GetSelectedMethodName(MethodTypes.Lose);
 			break;
 		}
 
