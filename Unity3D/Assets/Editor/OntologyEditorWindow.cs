@@ -9,9 +9,9 @@ using System.Text;
 public class OntologyEditorWindow : EditorWindow
 {
 	// Gamecloud connection settings
-	public string GamecloudAddress = "http://as";
-	public string GamecloudUser = "";
-	public string GamecloudPass = "";
+	public string GamecloudAddress;
+	public string GamecloudUser;    
+	public string GamecloudPass;
 	// End of Connection settings
 
 	private bool enableNewOntologyEntry = false;
@@ -78,8 +78,48 @@ public class OntologyEditorWindow : EditorWindow
 
 	public void Update()
 	{
-		GameObject.Find("GamecloudManager").GetComponent<SessionHandler>().SetGamecloudAddress(this.GamecloudAddress);
+        gamecloud.ChangeServerAddress(this.GamecloudAddress);
+
+        GameObject GamecloudManager = GetGamecloudManager();
+
+        SessionHandler sessionHandler = GetSessionHandler(GamecloudManager);
+
+        // Then, set the gamecloud address
+        sessionHandler.SetGamecloudAddress(this.GamecloudAddress);
+
+        // Then, find the manager and its sessionHandler component
+		//GameObject.Find("GamecloudManager").GetComponent<SessionHandler>().SetGamecloudAddress(this.GamecloudAddress);
 	}
+
+    private SessionHandler GetSessionHandler(GameObject GamecloudManager)
+    {
+        // Check if it has the wanted component
+        SessionHandler sessionHandler = GamecloudManager.GetComponent<SessionHandler>();
+
+        if (sessionHandler == null)
+        {
+            // Create a new one
+            sessionHandler = GamecloudManager.AddComponent<SessionHandler>();
+        }
+
+        return sessionHandler;
+
+
+    }
+
+    private static GameObject GetGamecloudManager()
+    {
+        // Find the gamecloud Manager
+        GameObject GamecloudManager = GameObject.Find("GamecloudManager");
+
+        // If there is no GamecloudManager
+        if (GamecloudManager == null)
+        {
+            // Instantiate a new one
+            GamecloudManager = new GameObject("GamecloudManager");
+        }
+        return GamecloudManager;
+    }
 
 	/// <summary>
 	/// Displays the ontologies view.
@@ -137,11 +177,16 @@ public class OntologyEditorWindow : EditorWindow
 	
 	void BuilOntologyObject (Types type, string name, string askHash, string gainHash, string loseHash)
 	{
+
 		// Start with Instantiating the new ontology object
 		GameObject gameObject = new GameObject(name);
 		gameObject.AddComponent<OntologyObject>().DefineOntology(type, name, askHash, gainHash, loseHash);
 
+        // And add it underneath the gamecloud manager
+        gameObject.transform.parent = GetGamecloudManager().transform;
+
 		// And job is done :-D
+
 
 	}
 

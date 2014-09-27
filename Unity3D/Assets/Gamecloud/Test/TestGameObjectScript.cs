@@ -3,17 +3,26 @@ using System.Collections;
 
 public class TestGameObjectScript : MonoBehaviour {
 
+    private bool tested = false;
+
 	// Use this for initialization
 	void Start () {
-		//TestGain();
-		TestAsk();
 
 
 	}
+
+    void Awake()
+    {
+        
+    }
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    if(tested == false)
+        {
+            TestAsk();
+            tested = true;
+        }
 	}
 
 	public void AskFunction(Hashtable result)
@@ -33,15 +42,16 @@ public class TestGameObjectScript : MonoBehaviour {
 		Debug.Log (JSON.JsonEncode(result).ToString());
 	}
 
+
 	public void TestAsk()
 	{
-		OntologyObject script = GameObject.Find("GainFirstUnityTestAchievement").GetComponent<OntologyObject>();
-		script.CallAskFunction();
+        OntologyObject script = GameObject.Find("GainMaailmanMahtavinHienoSaavutusAchievement").GetComponent<OntologyObject>();
+        script.CallAskFunction();
 	}
 
 	public void TestGain()
 	{
-		OntologyObject script = GameObject.Find("GainFirstUnityTestAchievement").GetComponent<OntologyObject>();
-		script.CallGainFunction();
+        OntologyObject script = GameObject.Find("GainMaailmanMahtavinHienoSaavutusAchievement").GetComponent<OntologyObject>();
+        script.CallGainFunction();
 	}
 }
