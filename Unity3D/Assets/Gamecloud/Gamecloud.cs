@@ -454,7 +454,7 @@ namespace Gamecloud
 				Hashtable result = request.response.Object;
 				if ( result == null )
 				{
-					Debug.LogError("Gamecloud.SendDate() - Response result was null");
+					Debug.LogError("Gamecloud.SendData() - Response result was null");
 					callback("Could not parse JSON response!", null);
 					return;
 				}

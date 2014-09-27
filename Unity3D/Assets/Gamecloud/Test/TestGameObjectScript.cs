@@ -20,7 +20,11 @@ public class TestGameObjectScript : MonoBehaviour {
 	void Update () {
 	    if(tested == false)
         {
-            TestAsk();
+            //TestAsk();
+            //TestAskEvent();
+            TestAskItem();
+            //TestLoseItem();
+            //TestGainItem();
             tested = true;
         }
 	}
@@ -42,6 +46,35 @@ public class TestGameObjectScript : MonoBehaviour {
 		Debug.Log (JSON.JsonEncode(result).ToString());
 	}
 
+    public void TestAskEvent()
+    {
+        OntologyObject script = GameObject.Find("StartedMyGameAwesomelyEvent").GetComponent<OntologyObject>();
+        script.CallAskFunction();
+    }
+
+    public void TestAskItem()
+    {
+        OntologyObject script = GameObject.Find("MyKoolTestItemForUnity").GetComponent<OntologyObject>();
+        script.CallAskFunction();
+    }
+
+    public void TestGainItem()
+    {
+        OntologyObject script = GameObject.Find("MyKoolTestItemForUnity").GetComponent<OntologyObject>();
+        script.CallGainFunction();
+    }
+
+    public void TestLoseItem()
+    {
+        OntologyObject script = GameObject.Find("MyKoolTestItemForUnity").GetComponent<OntologyObject>();
+        script.CallLoseFunction();
+    }
+
+    public void TestGainEvent()
+    {
+        OntologyObject script = GameObject.Find("StartedMyGameAwesomelyEvent").GetComponent<OntologyObject>();
+        script.CallGainFunction();
+    }
 
 	public void TestAsk()
 	{

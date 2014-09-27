@@ -245,12 +245,42 @@ public class OntologyEditorWindow : EditorWindow
 		
 		// Now, start creating the stuff
 		Debug.Log("AskName: " + askName + " AskHash: " + askHash + " TriggerName: " + triggerName + " TriggerHash: " + triggerHash);
+        BuilOntologyObject(Types.Event, askName, askHash, triggerHash, "");
 
 	} // End of ExtractAndBuilEventGameObject 
 
 	void ExtractAndBuildItemGameObject (ArrayList list)
 	{
-		throw new NotImplementedException ();
+        // Prepare to extract all the required info from the result JSON
+        string askHash = "";
+        string name = "";
+        string gainHash = "";
+        string loseHash = "";
+
+        // Loop over the lists
+        foreach (Hashtable entry in list)
+        {
+            // If we have the proper hashes
+            if (entry.ContainsKey("askHash"))
+            {
+                // Figure out the contents
+                askHash = entry["askHash"].ToString();
+                name = this.RemoveURI(entry["name"].ToString());
+            }
+            if (entry.ContainsKey("gainHash"))
+            {
+                gainHash = entry["gainHash"].ToString();
+            }
+            if (entry.ContainsKey("loseHash"))
+            {
+                loseHash = entry["loseHash"].ToString();
+            }
+        }
+
+
+        // Now, start creating the stuff
+        Debug.Log("AskName: " + name + " AskHash: " + askHash + " GainHash: " + gainHash + " loseHash: " + loseHash);
+        BuilOntologyObject(Types.Item, name, askHash, gainHash, loseHash);
 	} // End of ExtractAndBuildItemGameObject
 
 	/// <summary>
