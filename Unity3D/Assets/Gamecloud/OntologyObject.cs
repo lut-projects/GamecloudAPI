@@ -42,7 +42,9 @@ public class OntologyObject : MonoBehaviour {
 		switch(this.Type)
 		{
 		case Types.Achievement:
-			gamecloud.askAchievement(AskHash, this.sessionHandler.GetPlayerId(), AskCallback);
+                Debug.Log("AskHash: " + AskHash);
+                Debug.Log(" playerId: " + this.GetSessionHandler().GetPlayerId().ToString());
+			    gamecloud.askAchievement(AskHash, this.GetSessionHandler().GetPlayerId(), AskCallback);
 			break;
 		case Types.Event:
 			break;
@@ -62,7 +64,7 @@ public class OntologyObject : MonoBehaviour {
 		switch(this.Type)
 		{
 		case Types.Achievement:
-			gamecloud.gainAchievement(GainHash, this.sessionHandler.GetPlayerId(), this.sessionHandler.GetSessionId(), GainCallback);
+                gamecloud.gainAchievement(GainHash, GetSessionHandler().GetPlayerId(), GetSessionHandler().GetSessionId(), GainCallback);
 			break;
 		case Types.Event:
 			break;
@@ -115,9 +117,28 @@ public class OntologyObject : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+        Debug.Log("Getting session handler");
 		// Find the session handler
-		this.sessionHandler = GameObject.Find("GamecloudManager").GetComponent<SessionHandler>();
+        GetSessionHandler();
+		
 	}
+
+    private SessionHandler GetSessionHandler()
+    {
+        //Debug.Log("GetSessionHandler() - Session is currently: " + this.sessionHandler.ToString());
+
+        // Check, if this.sessionHandler is empty
+        if (this.sessionHandler == null)
+        {
+            Debug.Log("SessionHandler is currently null");
+            // Then, find it
+            this.sessionHandler = GameObject.Find("GamecloudManager").GetComponent<SessionHandler>();
+            Debug.Log("SessionHandler found: " + this.sessionHandler);
+        }
+
+        // And return the session handler
+        return this.sessionHandler;
+    }
 	
 	// Update is called once per frame
 	void Update () 

@@ -13,6 +13,9 @@ public class SessionHandler : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+        Debug.Log("SessionHandler.Start() - The gamecloud address is: " + GamecloudAddress);
+        Debug.Log("Gamecloud itself has the address: " + gamecloud.GetServerAddress());
+
 		// Set the gamecloud address to be correct one
 		this.gamecloud.ChangeServerAddress(GamecloudAddress);
 		// Start the session
@@ -22,6 +25,8 @@ public class SessionHandler : MonoBehaviour {
 		{
 			this.PlayerId = "ex:testPlayer";
 		}
+
+        Debug.Log("And after the start, gamecloud address is: " + gamecloud.GetServerAddress());
 	}
 
 	/// <summary>
@@ -30,7 +35,8 @@ public class SessionHandler : MonoBehaviour {
 	/// <param name="address">Address.</param>
 	public void SetGamecloudAddress(string address)
 	{
-		GamecloudAddress = address;
+        //Debug.Log("SessionHandler.SetGamecloudAddress() - Changing address to: " + address );
+		this.GamecloudAddress = address;
 	}
 
 	public void SetPlayerId(string playerId)

@@ -58,6 +58,11 @@ namespace Gamecloud
 			this.authkey = authkey;
 		}
 
+        public string GetServerAddress()
+        {
+            return this.SERVER_ADDRESS;
+        }
+
 		/// <summary>
 		/// Changes the server address.
 		/// </summary>
@@ -414,7 +419,7 @@ namespace Gamecloud
 		{
 			Debug.Log(JSON.JsonEncode(data));
 
-			Debug.Log("Server Address is: " + SERVER_ADDRESS);
+			Debug.Log("Gamecloud.SendDate() - Server Address is: " + SERVER_ADDRESS);
 
 			// When you pass a Hashtable as the third argument, we assume you want it send as JSON-encoded
 			// data.  We'll encode it to JSON for you and set the Content-Type header to application/json
