@@ -22,12 +22,21 @@ public class TestGameObjectScript : MonoBehaviour {
         {
             //TestAsk();
             //TestAskEvent();
-            TestAskItem();
+            //TestAskItem();
             //TestLoseItem();
             //TestGainItem();
+            TestOtherGameAsk();
             tested = true;
         }
 	}
+
+    public void TestOtherGameAsk()
+    {
+        // Get the other game script
+        AskFromOtherGame script = GameObject.Find("ExampleASKObject").GetComponent<AskFromOtherGame>();
+        script.CallAsk();
+    }
+
 
 	public void AskFunction(Hashtable result)
 	{

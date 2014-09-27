@@ -242,8 +242,13 @@ public class JSON
 							return "";
 						}
 						// convert the integer codepoint to a unicode char and add to string
-						s.Append (Char.ConvertFromUtf32 ((int)codePoint));
-						// skip 4 chars
+                        // Added check to see whether we are using MONO or Microsoft stuff
+#if __MonoCS__
+                        s.Append(char.ConvertFromUtf32((int)codePoint));
+#else
+                        s.Append(Char.ConvertFromUtf32((int)codePoint));
+#endif
+                        // skip 4 chars
 						index += 4;
 					} else {
 						break;

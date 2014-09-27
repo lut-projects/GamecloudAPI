@@ -14,8 +14,8 @@ public class SessionHandler : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-        Debug.Log("SessionHandler.Start() - The gamecloud address is: " + GamecloudAddress);
-        Debug.Log("Gamecloud itself has the address: " + gamecloud.GetServerAddress());
+        //Debug.Log("SessionHandler.Start() - The gamecloud address is: " + GamecloudAddress);
+        //Debug.Log("Gamecloud itself has the address: " + gamecloud.GetServerAddress());
 
 		// Set the gamecloud address to be correct one
 		this.gamecloud.ChangeServerAddress(GamecloudAddress);
@@ -24,14 +24,16 @@ public class SessionHandler : MonoBehaviour {
 		// Create a fake player ID, if one doesn't exist
 		if((this.PlayerId == null) || (this.PlayerId == ""))
 		{
-			this.PlayerId = "ex:testPlayer";
+			//this.PlayerId = "ex:testPlayer";
+            // If no playerID is defined, just get unique device ID
+            this.PlayerId = SystemInfo.deviceUniqueIdentifier;
 		}
         if((this.CharacterId == null) || (this.CharacterId == ""))
         {
             this.CharacterId = this.PlayerId + "_TestChar";
         }
 
-        Debug.Log("And after the start, gamecloud address is: " + gamecloud.GetServerAddress());
+        //Debug.Log("And after the start, gamecloud address is: " + gamecloud.GetServerAddress());
 	}
 
     public string GetCharacterId()

@@ -122,7 +122,7 @@ public class OntologyObject : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-        Debug.Log("Getting session handler");
+        //Debug.Log("Getting session handler");
 		// Find the session handler
         GetSessionHandler();
 		
@@ -135,10 +135,10 @@ public class OntologyObject : MonoBehaviour {
         // Check, if this.sessionHandler is empty
         if (this.sessionHandler == null)
         {
-            Debug.Log("SessionHandler is currently null");
+            //Debug.Log("SessionHandler is currently null");
             // Then, find it
             this.sessionHandler = GameObject.Find("GamecloudManager").GetComponent<SessionHandler>();
-            Debug.Log("SessionHandler found: " + this.sessionHandler);
+            //Debug.Log("SessionHandler found: " + this.sessionHandler);
         }
 
         // And return the session handler
