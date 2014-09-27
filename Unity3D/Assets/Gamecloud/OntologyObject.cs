@@ -47,8 +47,10 @@ public class OntologyObject : MonoBehaviour {
 			    gamecloud.askAchievement(AskHash, this.GetSessionHandler().GetPlayerId(), AskCallback);
 			break;
 		case Types.Event:
+            gamecloud.askEvent(AskHash, this.GetSessionHandler().GetPlayerId(), AskCallback);
 			break;
 		case Types.Item:
+            gamecloud.askItems(AskHash, GetSessionHandler().GetPlayerId(), GetSessionHandler().GetCharacterId(), AskCallback);
 			break;
 		default:
 			throw new UnityException("CallAskFunction() - Got a strange type that should not exist");
@@ -67,8 +69,10 @@ public class OntologyObject : MonoBehaviour {
                 gamecloud.gainAchievement(GainHash, GetSessionHandler().GetPlayerId(), GetSessionHandler().GetSessionId(), GainCallback);
 			break;
 		case Types.Event:
+            gamecloud.triggerEvent(GainHash, GetSessionHandler().GetPlayerId(), GetSessionHandler().GetSessionId(), GainCallback);
 			break;
 		case Types.Item:
+            gamecloud.gainItem(GainHash, GetSessionHandler().GetPlayerId(), GetSessionHandler().GetCharacterId(), GetSessionHandler().GetSessionId(), GainCallback);
 			break;
 		default:
 			throw new UnityException("CallAskFunction() - Got a strange type that should not exist");
@@ -85,8 +89,9 @@ public class OntologyObject : MonoBehaviour {
 		case Types.Achievement:
 			throw new UnityException("CallLoseFunction() called with Achievement. This should not be possible!");
 		case Types.Event:
-			break;
+            throw new UnityException("CallLoseFunction() called with Event! This should not be possible!");
 		case Types.Item:
+            gamecloud.loseItem(LoseHash, GetSessionHandler().GetPlayerId(), GetSessionHandler().GetCharacterId(), GetSessionHandler().GetSessionId(), LoseCallback);
 			break;
 		default:
 			throw new UnityException("CallAskFunction() - Got a strange type that should not exist");

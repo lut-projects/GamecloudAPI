@@ -9,6 +9,7 @@ public class SessionHandler : MonoBehaviour {
 	private Gamecloud.Gamecloud gamecloud = Gamecloud.Gamecloud.Instance;
 	public string SessionId;
 	public string PlayerId;
+    public string CharacterId;
 
 	// Use this for initialization
 	void Start () 
@@ -25,9 +26,23 @@ public class SessionHandler : MonoBehaviour {
 		{
 			this.PlayerId = "ex:testPlayer";
 		}
+        if((this.CharacterId == null) || (this.CharacterId == ""))
+        {
+            this.CharacterId = this.PlayerId + "_TestChar";
+        }
 
         Debug.Log("And after the start, gamecloud address is: " + gamecloud.GetServerAddress());
 	}
+
+    public string GetCharacterId()
+    {
+        return this.CharacterId;
+    }
+
+    public void SetCharacterId(string characterId)
+    {
+        this.CharacterId = characterId;
+    }
 
 	/// <summary>
 	/// Sets the gamecloud address.
