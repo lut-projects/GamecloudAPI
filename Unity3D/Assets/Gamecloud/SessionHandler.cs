@@ -24,7 +24,9 @@ public class SessionHandler : MonoBehaviour {
 		// Create a fake player ID, if one doesn't exist
 		if((this.PlayerId == null) || (this.PlayerId == ""))
 		{
-			this.PlayerId = "ex:testPlayer";
+			//this.PlayerId = "ex:testPlayer";
+            // If no playerID is defined, just get unique device ID
+            this.PlayerId = SystemInfo.deviceUniqueIdentifier;
 		}
         if((this.CharacterId == null) || (this.CharacterId == ""))
         {
